@@ -7,7 +7,9 @@
 Transkribuojame tik žodžius kuriuos morfologinis analizatorius atpažista kaip kalbos dalis. Kiti žodžiai: santrumpos, numeriai ar šiaip neatpažinti žodžiai (gali būti šiūkšlės, pavardės ir t.t.), netranskribuojami. Jie rezultaų lange bus pateikti nepakeisti, tik kita spalva.
 
 Sakinio pabaigos bus žymimos `//`. Sakinius nustatys dabar sintezavime naudojames *lex'as*.
-**Ar pauzės pagal skyrybos ženklus? `,` -> `/`?**
+
+**Ar pauzės pagal skyrybos ženklus? `,` -> `/`?**. 
+Asta: TAIP
 
 ## Samplaikos
 
@@ -30,3 +32,4 @@ Su `link` gali būti išimčių. Asta svarsto dar. Gali būti, kad taisyklė bus
 Informacijos lange: klitikui rodome jo morfologinę informaciją, transkripcijos variantas tik vienas. Kitam prie klitiko prijungtam žodžiui rodome to žodžio morfologinę informaciją ir jo transkripcijos variantus.
 
 **Ar po klitiko esantis žodis turi būti atpažįstamas morfologinio analizatoriaus? Pvz.: `...į 8...`, `...į NATO...`?**
+Asta: TAIP
