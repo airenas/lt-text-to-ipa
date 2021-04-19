@@ -1,0 +1,6 @@
+port: 8093
+
+logger:
+  level: DEBUG
+tagger:
+  url: http://localhost:8092/tag

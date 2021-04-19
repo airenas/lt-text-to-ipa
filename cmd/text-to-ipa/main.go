@@ -2,8 +2,11 @@ package main
 
 import (
 	"github.com/airenas/go-app/pkg/goapp"
+	"github.com/airenas/lt-text-to-ipa/internal/pkg/process"
+	"github.com/airenas/lt-text-to-ipa/internal/pkg/process/worker"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/service"
 	"github.com/labstack/gommon/color"
+	"github.com/spf13/viper"
 
 	"github.com/pkg/errors"
 )
@@ -17,10 +20,27 @@ func main() {
 
 	printBanner()
 
+	mw := &process.MainWorker{}
+	err = addProcessors(mw, goapp.Config)
+	if err != nil {
+		goapp.Log.Fatal(errors.Wrap(err, "Can't init processors"))
+	}
+
+	data.Transcriber = mw
+
 	err = service.StartWebServer(&data)
 	if err != nil {
 		goapp.Log.Fatal(errors.Wrap(err, "Can't start the service"))
 	}
+}
+
+func addProcessors(mw *process.MainWorker, cfg *viper.Viper) error {
+	pr, err := worker.NewTagger(cfg.GetString("tagger.url"))
+	if err != nil {
+		return errors.Wrap(err, "Can't init tagger")
+	}
+	mw.Add(pr)
+	return nil
 }
 
 var (
