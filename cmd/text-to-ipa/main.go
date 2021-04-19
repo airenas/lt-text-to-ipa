@@ -40,6 +40,11 @@ func addProcessors(mw *process.MainWorker, cfg *viper.Viper) error {
 		return errors.Wrap(err, "Can't init tagger")
 	}
 	mw.Add(pr)
+	pr, err = worker.NewAccentuator(cfg.GetString("accenter.url"))
+	if err != nil {
+		return errors.Wrap(err, "Can't init accenter")
+	}
+	mw.Add(pr)
 	return nil
 }
 
