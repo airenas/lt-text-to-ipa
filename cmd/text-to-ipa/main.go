@@ -45,6 +45,11 @@ func addProcessors(mw *process.MainWorker, cfg *viper.Viper) error {
 		return errors.Wrap(err, "Can't init accenter")
 	}
 	mw.Add(pr)
+	pr, err = worker.NewTranscriber(cfg.GetString("transcriber.url"))
+	if err != nil {
+		return errors.Wrap(err, "Can't init transcriber")
+	}
+	mw.Add(pr)
 	return nil
 }
 
