@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/airenas/lt-text-to-ipa/internal/pkg/service/api"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/test/mocks"
 	"github.com/stretchr/testify/assert"
 )
@@ -25,6 +26,7 @@ func TestWork(t *testing.T) {
 	processorMock.f = func(d *Data) error {
 		assert.Equal(t, "olia", d.OriginalText)
 		d.Text = "mp3"
+		d.Result = []*api.ResultWord{}
 		return nil
 	}
 	res, err := worker.Process("olia")

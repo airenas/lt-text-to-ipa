@@ -50,6 +50,7 @@ func addProcessors(mw *process.MainWorker, cfg *viper.Viper) error {
 		return errors.Wrap(err, "Can't init transcriber")
 	}
 	mw.Add(pr)
+	mw.Add(worker.NewResultMaker())
 	return nil
 }
 

@@ -22,7 +22,7 @@ func (mw *MainWorker) Process(input string) ([]*api.ResultWord, error) {
 	if err != nil {
 		return nil, err
 	}
-	return mapResult(data)
+	return data.Result, nil
 }
 
 //Add adds a processor to the end
@@ -38,9 +38,4 @@ func (mw *MainWorker) processAll(data *Data) error {
 		}
 	}
 	return nil
-}
-
-func mapResult(data *Data) ([]*api.ResultWord, error) {
-	res := make([]*api.ResultWord, 0)
-	return res, nil
 }

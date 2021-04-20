@@ -1,11 +1,15 @@
 package process
 
+import "github.com/airenas/lt-text-to-ipa/internal/pkg/service/api"
+
 // Data working data for one request
 type Data struct {
 	OriginalText string
 	Text         string
 
 	Words []*ProcessedWord
+
+	Result []*api.ResultWord
 }
 
 //ProcessedWord keeps one word info
