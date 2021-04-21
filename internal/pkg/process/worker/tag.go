@@ -28,7 +28,7 @@ func NewTagger(urlStr string) (process.Processor, error) {
 
 func (p *tagger) Process(data *process.Data) error {
 	var output []*TaggedWord
-	err := p.httpWrap.InvokeText(data.OriginalText, &output)
+	err := p.httpWrap.InvokeText(data.Text, &output)
 	if err != nil {
 		return err
 	}
