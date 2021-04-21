@@ -27,10 +27,12 @@ func (p *resultMaker) Process(data *process.Data) error {
 func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 	res := make([]*api.ResultWord, 0)
 	for _, w := range data.Words {
-		if w.Tagged.IsWord() {
-			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.Word, IPA: w.Transcription, IPAType: ""})
+		if w.Tagged.Type == process.Word {
+			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPA: w.Transcription, IPAType: "word"})
+		} else if w.Tagged.Type == process.OtherWord {
+			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPAType: "none"})
 		} else {
-			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: w.Tagged.Separator, IPA: w.Tagged.Separator, IPAType: ""})
+			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: w.Tagged.String, IPAType: "none"})
 		}
 	}
 	return res, nil

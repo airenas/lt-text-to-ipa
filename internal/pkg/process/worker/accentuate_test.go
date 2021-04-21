@@ -40,7 +40,7 @@ func TestInvokeAccentuator(t *testing.T) {
 	assert.NotNil(t, pr)
 	pr.(*accentuator).httpWrap = httpJSONMock
 	d := newTestData()
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "word"}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("word")})
 	pegomock.When(httpJSONMock.InvokeJSON(pegomock.AnyInterface(), pegomock.AnyInterface())).Then(
 		func(params []pegomock.Param) pegomock.ReturnValues {
 			*params[1].(*[]accentOutputElement) = []accentOutputElement{{Word: "word",
@@ -58,7 +58,7 @@ func TestInvokeAccentuator_FailOutput(t *testing.T) {
 	assert.NotNil(t, pr)
 	pr.(*accentuator).httpWrap = httpJSONMock
 	d := newTestData()
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "word"}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("word")})
 	pegomock.When(httpJSONMock.InvokeJSON(pegomock.AnyInterface(), pegomock.AnyInterface())).Then(
 		func(params []pegomock.Param) pegomock.ReturnValues {
 			*params[1].(*[]accentOutputElement) = []accentOutputElement{}
@@ -74,7 +74,7 @@ func TestInvokeAccentuator_Fail(t *testing.T) {
 	assert.NotNil(t, pr)
 	pr.(*accentuator).httpWrap = httpJSONMock
 	d := newTestData()
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "word"}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("word")})
 	pegomock.When(httpJSONMock.InvokeJSON(pegomock.AnyInterface(), pegomock.AnyInterface())).ThenReturn(errors.New("haha"))
 	err := pr.Process(d)
 	assert.NotNil(t, err)
@@ -91,21 +91,21 @@ func TestInvokeAccentuator_NoData(t *testing.T) {
 
 func TestMapAccInput(t *testing.T) {
 	d := newTestData()
-	d.Words = append(d.Words, &process.ProcessedWord{UserTranscription: "v a - o l i a", Tagged: process.TaggedWord{Word: "v1"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Separator: "!"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "v2"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "v3"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Space: true}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("v1")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep("!")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("v2")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v3", Type: process.OtherWord}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSpace(" ")})
 	inp := mapAccentInput(d)
-	assert.Equal(t, []string{"v2", "v3"}, inp)
+	assert.Equal(t, []string{"v1", "v2"}, inp)
 }
 
 func TestMapAccOutput(t *testing.T) {
 	d := newTestData()
-	d.Words = append(d.Words, &process.ProcessedWord{UserTranscription: "v a - o l i a", Tagged: process.TaggedWord{Word: "v1"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Separator: "!"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Space: true}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "v2"}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v1", Type: process.OtherWord}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep("!")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSpace(" ")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("v2")})
 
 	output := []accentOutputElement{{Word: "v2",
 		Accent: []accent{{Mi: "mi", Variants: []process.AccentVariant{{Accent: 101,
@@ -119,9 +119,9 @@ func TestMapAccOutput(t *testing.T) {
 
 func TestMapAccOutput_FindBest(t *testing.T) {
 	d := newTestData()
-	d.Words = append(d.Words, &process.ProcessedWord{UserTranscription: "v a - o l i a", Tagged: process.TaggedWord{Word: "v1"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Separator: "!"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "v2", Mi: "mi2"}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v1", Type: process.OtherWord}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep("!")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v2", Mi: "mi2", Type: process.Word}})
 
 	output := []accentOutputElement{{Word: "v2",
 		Accent: []accent{{MiVdu: "mi1", Variants: []process.AccentVariant{{Accent: 101,
@@ -137,9 +137,9 @@ func TestMapAccOutput_FindBest(t *testing.T) {
 
 func TestMapAccOutput_Error(t *testing.T) {
 	d := newTestData()
-	d.Words = append(d.Words, &process.ProcessedWord{UserTranscription: "v a - o l i a", Tagged: process.TaggedWord{Word: "v1"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Separator: "!"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "v2", Mi: "mi2"}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v1", Mi: "mi2", Type: process.OtherWord}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep("!")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v2", Mi: "mi2", Type: process.Word}})
 
 	output := []accentOutputElement{{Word: "v2",
 		Accent: []accent{{MiVdu: "mi1", Error: "err", Variants: []process.AccentVariant{{Accent: 0,
@@ -155,9 +155,8 @@ func TestMapAccOutput_Error(t *testing.T) {
 
 func TestMapAccOutput_WithAccent(t *testing.T) {
 	d := newTestData()
-	d.Words = append(d.Words, &process.ProcessedWord{UserTranscription: "v a - o l i a", Tagged: process.TaggedWord{Word: "v1"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Separator: "!"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "v2", Mi: "mi2"}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep("!")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v2", Mi: "mi2", Type: process.Word}})
 
 	output := []accentOutputElement{{Word: "v2",
 		Accent: []accent{
@@ -170,14 +169,14 @@ func TestMapAccOutput_WithAccent(t *testing.T) {
 
 	err := mapAccentOutput(d, output)
 	assert.Nil(t, err)
-	assert.Equal(t, "v-3", d.Words[2].AccentVariant.Syll)
-	assert.Equal(t, 103, d.Words[2].AccentVariant.Accent)
+	assert.Equal(t, "v-3", d.Words[1].AccentVariant.Syll)
+	assert.Equal(t, 103, d.Words[1].AccentVariant.Accent)
 }
 
 func TestMapAccOutput_FailError(t *testing.T) {
 	d := newTestData()
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "v2", Mi: "mi2"}})
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "v2", Mi: "mi2"}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v2", Mi: "mi2", Type: process.Word}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v2", Mi: "mi2", Type: process.Word}})
 
 	output := []accentOutputElement{{Word: "v2",
 		Accent: []accent{
@@ -193,9 +192,9 @@ func TestMapAccOutput_FailError(t *testing.T) {
 
 func TestMapAccOutput_FailErrorTooLong(t *testing.T) {
 	d := newTestData()
-	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Word: "v2", Mi: "mi2"}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v2", Mi: "mi2", Type: process.Word}})
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{
-		Word: "loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong", Mi: "mi2"}})
+		String: "loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong", Mi: "mi2", Type: process.Word}})
 
 	output := []accentOutputElement{{Word: "v2",
 		Accent: []accent{

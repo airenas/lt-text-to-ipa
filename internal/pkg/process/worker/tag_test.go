@@ -50,21 +50,17 @@ func TestInvokeTagger(t *testing.T) {
 	err := pr.Process(&d)
 	assert.Nil(t, err)
 	assert.Equal(t, 4, len(d.Words))
-	assert.Equal(t, true, d.Words[0].Tagged.Space)
-	assert.False(t, d.Words[0].Tagged.IsWord())
+	assert.Equal(t, process.Space, d.Words[0].Tagged.Type)
 
-	assert.Equal(t, ",", d.Words[1].Tagged.Separator)
-	assert.Equal(t, "", d.Words[1].Tagged.Word)
-	assert.False(t, d.Words[1].Tagged.IsWord())
+	assert.Equal(t, process.Separator, d.Words[1].Tagged.Type)
+	assert.Equal(t, ",", d.Words[1].Tagged.String)
 
-	assert.Equal(t, "", d.Words[2].Tagged.Separator)
-	assert.Equal(t, "word", d.Words[2].Tagged.Word)
+	assert.Equal(t, process.Word, d.Words[2].Tagged.Type)
+	assert.Equal(t, "word", d.Words[2].Tagged.String)
 	assert.Equal(t, "lemma", d.Words[2].Tagged.Lemma)
 	assert.Equal(t, "mi", d.Words[2].Tagged.Mi)
-	assert.True(t, d.Words[2].Tagged.IsWord())
 
-	assert.True(t, d.Words[3].Tagged.SentenceEnd)
-	assert.False(t, d.Words[3].Tagged.IsWord())
+	assert.Equal(t, process.SentenceEnd, d.Words[3].Tagged.Type)
 }
 
 func TestInvokeTagger_Fail(t *testing.T) {
@@ -83,10 +79,10 @@ func TestMapTag(t *testing.T) {
 		v TaggedWord
 		e process.TaggedWord
 	}{
-		{v: TaggedWord{Type: "WORD", String: "mama", Mi: "mi"}, e: process.TaggedWord{Word: "mama", Mi: "mi"}},
-		{v: TaggedWord{Type: "NUMBER", String: "10", Mi: "mi"}, e: process.TaggedWord{Word: "10", Mi: "mi"}},
-		{v: TaggedWord{Type: "SPACE", String: "  "}, e: process.TaggedWord{Space: true}},
-		{v: TaggedWord{Type: "SEPARATOR", String: ","}, e: process.TaggedWord{Separator: ","}},
+		{v: TaggedWord{Type: "WORD", String: "mama", Mi: "mi"}, e: process.TaggedWord{String: "mama", Mi: "mi", Type: process.Word}},
+		{v: TaggedWord{Type: "NUMBER", String: "10", Mi: "mi"}, e: process.TaggedWord{String: "10", Mi: "", Type: process.OtherWord}},
+		{v: TaggedWord{Type: "SPACE", String: "  "}, e: process.TaggedWord{String: "  ", Type: process.Space}},
+		{v: TaggedWord{Type: "SEPARATOR", String: ","}, e: process.TaggedWord{String: ",", Type: process.Separator}},
 	}
 
 	for _, tc := range tests {

@@ -35,6 +35,7 @@ func main() {
 }
 
 func addProcessors(mw *process.MainWorker, cfg *viper.Viper) error {
+	mw.Add(worker.NewCleaner())
 	pr, err := worker.NewTagger(cfg.GetString("tagger.url"))
 	if err != nil {
 		return errors.Wrap(err, "Can't init tagger")

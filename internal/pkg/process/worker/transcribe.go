@@ -67,32 +67,24 @@ type trans struct {
 func mapTransInput(data *process.Data) ([]*transInput, error) {
 	res := []*transInput{}
 	var pr *transInput
+	_ = pr
 	for _, w := range data.Words {
 		tgw := w.Tagged
-		if !tgw.IsWord() {
+		if tgw.Type != process.Word {
 			pr = nil
 		} else {
 			ti := &transInput{}
 			tword := transWord(w)
 			ti.Word = tword
-			if w.UserTranscription != "" {
-				ti.Syll = w.UserSyllables
-				ti.User = w.UserTranscription
-				ti.Ml = tword
-			} else {
-				if w.AccentVariant == nil {
-					return nil, errors.New("No accent variant for " + tword)
-				}
-				ti.Acc = w.AccentVariant.Accent
-				if w.UserAccent > 0 {
-					ti.Acc = w.UserAccent
-				}
-				ti.Syll = w.AccentVariant.Syll
-				ti.Ml = w.AccentVariant.Ml
+			if w.AccentVariant == nil {
+				return nil, errors.New("No accent variant for " + tword)
 			}
-			if pr != nil {
-				pr.Rc = tword
-			}
+			ti.Acc = w.AccentVariant.Accent
+			ti.Syll = w.AccentVariant.Syll
+			ti.Ml = w.AccentVariant.Ml
+			// if pr != nil {
+			// 	pr.Rc = tword
+			// }
 			res = append(res, ti)
 			pr = ti
 		}
@@ -101,17 +93,14 @@ func mapTransInput(data *process.Data) ([]*transInput, error) {
 }
 
 func transWord(w *process.ProcessedWord) string {
-	if w.TranscriptionWord != "" {
-		return w.TranscriptionWord
-	}
-	return w.Tagged.Word
+	return w.Tagged.String
 }
 
 func mapTransOutput(data *process.Data, out []transOutput) error {
 	i := 0
 	for _, w := range data.Words {
 		tgw := w.Tagged
-		if tgw.IsWord() {
+		if tgw.Type == process.Word {
 			if len(out) <= i {
 				return errors.New("Wrong transcribe result")
 			}

@@ -1,6 +1,8 @@
 package worker
 
 import (
+	"strings"
+
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/process"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/utils"
 	"github.com/pkg/errors"
@@ -55,16 +57,26 @@ func mapTagResult(tags []*TaggedWord) []*process.ProcessedWord {
 
 func mapTag(tag *TaggedWord) process.TaggedWord {
 	res := process.TaggedWord{}
+	res.String = tag.String
 	if tag.Type == "SEPARATOR" {
-		res.Separator = tag.String
+		res.Type = process.Separator
 	} else if tag.Type == "SENTENCE_END" {
-		res.SentenceEnd = true
-	} else if tag.Type == "WORD" || tag.Type == "NUMBER" {
-		res.Word = tag.String
+		res.Type = process.SentenceEnd
+	} else if tag.Type == "WORD" {
 		res.Lemma = tag.Lemma
 		res.Mi = tag.Mi
+		res.Type = detectType(res.Mi)
+	} else if tag.Type == "NUMBER" {
+		res.Type = process.OtherWord
 	} else if tag.Type == "SPACE" {
-		res.Space = true
+		res.Type = process.Space
 	}
 	return res
+}
+
+func detectType(mi string) process.StringTypeEnum {
+	if mi == "" || strings.HasPrefix(mi, "X") || strings.HasPrefix(mi, "Y") {
+		return process.OtherWord
+	}
+	return process.Word
 }

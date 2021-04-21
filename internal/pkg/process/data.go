@@ -14,23 +14,33 @@ type Data struct {
 
 //ProcessedWord keeps one word info
 type ProcessedWord struct {
-	Tagged            TaggedWord
-	UserTranscription string
-	UserSyllables     string
-	TranscriptionWord string
-	AccentVariant     *AccentVariant
-	UserAccent        int
-	Transcription     string
+	Tagged        TaggedWord
+	AccentVariant *AccentVariant
+	Transcription string
 }
+
+//StringTypeEnum represent possible string types
+type StringTypeEnum int
+
+const (
+	//Word value
+	Word StringTypeEnum = iota + 1
+	//OtherWord value
+	OtherWord
+	//Separator value
+	Separator
+	//Space value
+	Space
+	//SentenceEnd value - data normalized by user
+	SentenceEnd
+)
 
 //TaggedWord - tagger's result
 type TaggedWord struct {
-	Separator   string
-	SentenceEnd bool
-	Space       bool
-	Word        string
-	Mi          string
-	Lemma       string
+	Type      StringTypeEnum
+	String    string
+	Mi        string
+	Lemma     string
 }
 
 //AccentVariant - accenters's result
@@ -40,9 +50,4 @@ type AccentVariant struct {
 	Ml       string  `json:"ml"`
 	Syll     string  `json:"syll"`
 	Usage    float64 `json:"usage"`
-}
-
-//IsWord returns true if object indicates word
-func (tw TaggedWord) IsWord() bool {
-	return !tw.SentenceEnd && tw.Separator == "" && !tw.Space
 }

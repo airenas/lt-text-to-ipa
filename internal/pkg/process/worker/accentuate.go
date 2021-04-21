@@ -65,8 +65,8 @@ func mapAccentInput(data *process.Data) []string {
 	res := []string{}
 	for _, w := range data.Words {
 		tgw := w.Tagged
-		if tgw.IsWord() && w.UserTranscription == "" {
-			res = append(res, w.Tagged.Word)
+		if tgw.Type == process.Word {
+			res = append(res, w.Tagged.String)
 		}
 	}
 	return res
@@ -76,7 +76,7 @@ func mapAccentOutput(data *process.Data, out []accentOutputElement) error {
 	i := 0
 	for _, w := range data.Words {
 		tgw := w.Tagged
-		if tgw.IsWord() && w.UserTranscription == "" {
+		if tgw.Type == process.Word {
 			if len(out) <= i {
 				return errors.New("Wrong accent result")
 			}
@@ -92,14 +92,14 @@ func mapAccentOutput(data *process.Data, out []accentOutputElement) error {
 
 func setAccent(w *process.ProcessedWord, out accentOutputElement) error {
 	if out.Error != "" {
-		if len(w.Tagged.Word) >= 50 {
+		if len(w.Tagged.String) >= 50 {
 			goapp.Log.Error(out.Error)
-			return utils.NewErrWordTooLong(w.Tagged.Word)
+			return utils.NewErrWordTooLong(w.Tagged.String)
 		}
-		return errors.Errorf("Accent error for '%s'('%s'): %s", w.Tagged.Word, out.Word, out.Error)
+		return errors.Errorf("Accent error for '%s'('%s'): %s", w.Tagged.String, out.Word, out.Error)
 	}
-	if w.Tagged.Word != out.Word {
-		return errors.Errorf("Words do not match '%s' vs '%s'", w.Tagged.Word, out.Word)
+	if w.Tagged.String != out.Word {
+		return errors.Errorf("Words do not match '%s' vs '%s'", w.Tagged.String, out.Word)
 	}
 	w.AccentVariant = findBestAccentVariant(out.Accent, w.Tagged.Mi, w.Tagged.Lemma)
 	return nil
