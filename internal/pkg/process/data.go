@@ -17,6 +17,7 @@ type ProcessedWord struct {
 	Tagged        TaggedWord
 	AccentVariant *AccentVariant
 	Transcription string
+	IPA           string
 }
 
 //StringTypeEnum represent possible string types
@@ -37,10 +38,10 @@ const (
 
 //TaggedWord - tagger's result
 type TaggedWord struct {
-	Type      StringTypeEnum
-	String    string
-	Mi        string
-	Lemma     string
+	Type   StringTypeEnum
+	String string
+	Mi     string
+	Lemma  string
 }
 
 //AccentVariant - accenters's result
