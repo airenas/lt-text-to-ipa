@@ -8,6 +8,21 @@ import (
 	"github.com/pkg/errors"
 )
 
+type ipaTypeEnum int
+
+const (
+	None ipaTypeEnum = iota + 1
+	WordOne
+	WordMultiple
+	Sep
+)
+
+var ipaTypeStringEnum = map[ipaTypeEnum]string{None: "NONE", WordOne: "ONE", WordMultiple: "MULTIPLE", Sep: "SEP"}
+
+func ipaToString(t ipaTypeEnum) string {
+	return ipaTypeStringEnum[t]
+}
+
 type resultMaker struct {
 }
 
@@ -31,19 +46,30 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 	for _, w := range data.Words {
 		tgw := w.Tagged
 		if w.Tagged.Type == process.Word {
-			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPA: w.IPA, IPAType: "word"})
+			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPA: w.IPA,
+				IPAType: getIPAWordType(w)})
 		} else if w.Tagged.Type == process.OtherWord {
-			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPAType: "none"})
+			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.SentenceEnd {
-			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "//", IPAType: "sep"})
+			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "//",
+				IPAType: ipaToString(Sep)})
 		} else if w.Tagged.Type == process.Separator && tgw.String == "," {
-			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "/", IPAType: "sep"})
+			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "/",
+				IPAType: ipaToString(Sep)})
 		} else if w.Tagged.Type == process.Separator && tgw.String == "\n" {
-			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "\n", IPAType: "sep"})
+			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "\n",
+				IPAType: ipaToString(Sep)})
 		} else {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: w.Tagged.String,
-				IPA: fmt.Sprintf("%*s", len(tgw.String), " "), IPAType: "none"})
+				IPA: fmt.Sprintf("%*s", len(tgw.String), " "), IPAType: ipaToString(None)})
 		}
 	}
 	return res, nil
+}
+
+func getIPAWordType(w *process.ProcessedWord) string {
+	if w.AccentCount > 1 || w.TranscriptionCount > 1 {
+		return ipaToString(WordMultiple)
+	}
+	return ipaToString(WordOne)
 }

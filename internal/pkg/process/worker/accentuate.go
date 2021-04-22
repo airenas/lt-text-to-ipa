@@ -1,6 +1,8 @@
 package worker
 
 import (
+	"fmt"
+
 	"github.com/airenas/go-app/pkg/goapp"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/process"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/utils"
@@ -102,6 +104,7 @@ func setAccent(w *process.ProcessedWord, out accentOutputElement) error {
 		return errors.Errorf("Words do not match '%s' vs '%s'", w.Tagged.String, out.Word)
 	}
 	w.AccentVariant = findBestAccentVariant(out.Accent, w.Tagged.Mi, w.Tagged.Lemma)
+	w.AccentCount = countVariants(out.Accent)
 	return nil
 }
 
@@ -133,4 +136,16 @@ func findBestAccentVariant(acc []accent, mi string, lema string) *process.Accent
 	}
 	//no filter
 	return find(func(a *accent) bool { return true }, func(v *process.AccentVariant) bool { return true })
+}
+
+func countVariants(acc []accent) int {
+	am := make(map[string]bool)
+	for _, a := range acc {
+		for _, v := range a.Variants {
+			if v.Accent > 0 {
+				am[fmt.Sprintf("%d,%s,%s", v.Accent, v.Syll, a.MF)] = true
+			}
+		}
+	}
+	return len(am)
 }

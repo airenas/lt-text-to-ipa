@@ -121,6 +121,7 @@ func setTrans(w *process.ProcessedWord, out transOutput) error {
 	if transWord(w) != out.Word {
 		return errors.Errorf("Words do not match (transcriber) '%s' vs '%s'", transWord(w), out.Word)
 	}
+	w.TranscriptionCount = len(out.Transcription)
 	for _, t := range out.Transcription {
 		if t.Transcription != "" {
 			w.Transcription = dropQMarks(t.Transcription)

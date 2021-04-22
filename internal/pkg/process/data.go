@@ -14,10 +14,12 @@ type Data struct {
 
 //ProcessedWord keeps one word info
 type ProcessedWord struct {
-	Tagged        TaggedWord
-	AccentVariant *AccentVariant
-	Transcription string
-	IPA           string
+	Tagged             TaggedWord
+	AccentVariant      *AccentVariant
+	AccentCount        int
+	TranscriptionCount int
+	Transcription      string
+	IPA                string
 }
 
 //StringTypeEnum represent possible string types
