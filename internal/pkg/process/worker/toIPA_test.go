@@ -39,3 +39,12 @@ func TestInvokeToIPA(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, "w ooo rr d", d.Words[0].IPA)
 }
+
+func TestMapIPAOutput_Fail(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Transcription: "w o r d", Tagged: newTestTWord("word")})
+	err := mapIPAOutput(d, []ipaOutput{{Transcription: "w o r d 1", IPA: "w ooo rr d"}})
+	assert.NotNil(t, err)
+	err = mapIPAOutput(d, []ipaOutput{})
+	assert.NotNil(t, err)
+}

@@ -31,7 +31,7 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 	for _, w := range data.Words {
 		tgw := w.Tagged
 		if w.Tagged.Type == process.Word {
-			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPA: w.Transcription, IPAType: "word"})
+			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPA: w.IPA, IPAType: "word"})
 		} else if w.Tagged.Type == process.OtherWord {
 			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPAType: "none"})
 		} else if w.Tagged.Type == process.SentenceEnd {

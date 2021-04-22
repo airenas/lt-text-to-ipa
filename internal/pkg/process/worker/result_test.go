@@ -18,7 +18,7 @@ func TestInvokeResultMaker(t *testing.T) {
 	pr := NewResultMaker()
 	d := newTestData()
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("word"),
-		AccentVariant: &process.AccentVariant{Accent: 103}, Transcription: "w o r d"})
+		AccentVariant: &process.AccentVariant{Accent: 103}, IPA: "w o r d"})
 	err := pr.Process(d)
 	assert.Nil(t, err)
 	if assert.Equal(t, 1, len(d.Result)) {
