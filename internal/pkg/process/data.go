@@ -20,6 +20,7 @@ type ProcessedWord struct {
 	TranscriptionCount int
 	Transcription      string
 	IPA                string
+	Clitic             *Clitic
 }
 
 //StringTypeEnum represent possible string types
@@ -53,4 +54,12 @@ type AccentVariant struct {
 	Ml       string  `json:"ml"`
 	Syll     string  `json:"syll"`
 	Usage    float64 `json:"usage"`
+}
+
+//Clitic contains clitic analysis data
+type Clitic struct {
+	Accent       int
+	AccentedType string
+	Type         string
+	Pos          int
 }

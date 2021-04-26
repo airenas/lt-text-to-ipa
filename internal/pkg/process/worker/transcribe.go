@@ -93,7 +93,7 @@ func mapTransInput(data *process.Data) ([]*transInput, error) {
 }
 
 func transWord(w *process.ProcessedWord) string {
-	return w.Tagged.String
+	return strings.ToLower(w.Tagged.String)
 }
 
 func mapTransOutput(data *process.Data, out []transOutput) error {

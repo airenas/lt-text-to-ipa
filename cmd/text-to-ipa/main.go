@@ -38,22 +38,27 @@ func addProcessors(mw *process.MainWorker, cfg *viper.Viper) error {
 	mw.Add(worker.NewCleaner())
 	pr, err := worker.NewTagger(cfg.GetString("tagger.url"))
 	if err != nil {
-		return errors.Wrap(err, "Can't init tagger")
+		return errors.Wrap(err, "can't init tagger")
 	}
 	mw.Add(pr)
 	pr, err = worker.NewAccentuator(cfg.GetString("accenter.url"))
 	if err != nil {
-		return errors.Wrap(err, "Can't init accenter")
+		return errors.Wrap(err, "can't init accenter")
+	}
+	mw.Add(pr)
+	pr, err = worker.NewClitics(cfg.GetString("cliticsDetector.url"))
+	if err != nil {
+		return errors.Wrap(err, "can't init clitics detector")
 	}
 	mw.Add(pr)
 	pr, err = worker.NewTranscriber(cfg.GetString("transcriber.url"))
 	if err != nil {
-		return errors.Wrap(err, "Can't init transcriber")
+		return errors.Wrap(err, "can't init transcriber")
 	}
 	mw.Add(pr)
 	pr, err = worker.NewToIPA(cfg.GetString("ipaConverter.url"))
 	if err != nil {
-		return errors.Wrap(err, "Can't init transcriber")
+		return errors.Wrap(err, "can't init transcriber")
 	}
 	mw.Add(pr)
 	mw.Add(worker.NewResultMaker())
