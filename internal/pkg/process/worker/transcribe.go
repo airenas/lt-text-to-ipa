@@ -70,9 +70,7 @@ func mapTransInput(data *process.Data) ([]*transInput, error) {
 	_ = pr
 	for _, w := range data.Words {
 		tgw := w.Tagged
-		if tgw.Type != process.Word {
-			pr = nil
-		} else {
+		if tgw.Type == process.Word {
 			ti := &transInput{}
 			tword := transWord(w)
 			ti.Word = tword
@@ -82,11 +80,20 @@ func mapTransInput(data *process.Data) ([]*transInput, error) {
 			ti.Acc = w.AccentVariant.Accent
 			ti.Syll = w.AccentVariant.Syll
 			ti.Ml = w.AccentVariant.Ml
-			// if pr != nil {
-			// 	pr.Rc = tword
-			// }
+			if w.Clitic != nil {
+				if w.Clitic.AccentedType == "NONE" {
+					ti.Acc = 0
+				} else if w.Clitic.AccentedType == "STATIC" {
+					ti.Acc = w.Clitic.Accent
+				}
+				if pr != nil && w.Clitic.Pos > 0 {
+					pr.Rc = tword
+				}
+				pr = ti
+			} else {
+				pr = nil
+			}
 			res = append(res, ti)
-			pr = ti
 		}
 	}
 	return res, nil

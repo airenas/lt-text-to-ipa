@@ -15,9 +15,11 @@ const (
 	WordOne
 	WordMultiple
 	Sep
+	SepClitic
 )
 
-var ipaTypeStringEnum = map[ipaTypeEnum]string{None: "NONE", WordOne: "ONE", WordMultiple: "MULTIPLE", Sep: "SEP"}
+var ipaTypeStringEnum = map[ipaTypeEnum]string{None: "NONE", WordOne: "ONE", WordMultiple: "MULTIPLE", Sep: "SEP",
+	SepClitic: "SEP_CLITIC"}
 
 func ipaToString(t ipaTypeEnum) string {
 	return ipaTypeStringEnum[t]
@@ -43,7 +45,7 @@ func (p *resultMaker) Process(data *process.Data) error {
 
 func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 	res := make([]*api.ResultWord, 0)
-	for _, w := range data.Words {
+	for i, w := range data.Words {
 		tgw := w.Tagged
 		if w.Tagged.Type == process.Word {
 			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPA: w.IPA,
@@ -53,6 +55,9 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 		} else if w.Tagged.Type == process.SentenceEnd {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "//",
 				IPAType: ipaToString(Sep)})
+		} else if w.Tagged.Type == process.Space && betweenClitics(data.Words, i) {
+			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "‿",
+				IPAType: ipaToString(SepClitic)})
 		} else if w.Tagged.Type == process.Separator && tgw.String == "," {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "/",
 				IPAType: ipaToString(Sep)})
@@ -72,4 +77,11 @@ func getIPAWordType(w *process.ProcessedWord) string {
 		return ipaToString(WordMultiple)
 	}
 	return ipaToString(WordOne)
+}
+
+func betweenClitics(words []*process.ProcessedWord, at int) bool {
+	if at == 0 || at == len(words)-1 {
+		return false
+	}
+	return words[at-1].Clitic != nil && words[at+1].Clitic != nil
 }
