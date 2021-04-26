@@ -27,8 +27,8 @@ participant "Tagger" as tagger
 participant "Lex" as lex
 participant "Morf" as morf
 participant "Accenter" as accenter
-participant "Transcriber" as transcriber
 participant "Clitics" as clitics
+participant "Transcriber" as transcriber
 participant "TransToIPA" as toIPA
 
 User -> srv: /ipa
@@ -57,15 +57,15 @@ activate accenter
 accenter --> srv:
 deactivate accenter
 
-srv -> transcriber: 
-activate transcriber
-transcriber --> srv:
-deactivate transcriber
-
 srv -> clitics: 
 activate clitics
 clitics --> srv:
 deactivate clitics
+
+srv -> transcriber: 
+activate transcriber
+transcriber --> srv:
+deactivate transcriber
 
 srv -> toIPA: 
 activate toIPA
