@@ -1,6 +1,9 @@
 package process
 
-import "github.com/airenas/lt-text-to-ipa/internal/pkg/service/api"
+import (
+	"github.com/airenas/lt-text-to-ipa/internal/pkg/extapi"
+	"github.com/airenas/lt-text-to-ipa/internal/pkg/service/api"
+)
 
 // Data working data for one request
 type Data struct {
@@ -15,7 +18,7 @@ type Data struct {
 //ProcessedWord keeps one word info
 type ProcessedWord struct {
 	Tagged             TaggedWord
-	AccentVariant      *AccentVariant
+	AccentVariant      *extapi.AccentVariant
 	AccentCount        int
 	Mihs               []string
 	TranscriptionCount int
@@ -46,15 +49,6 @@ type TaggedWord struct {
 	String string
 	Mi     string
 	Lemma  string
-}
-
-//AccentVariant - accenters's result
-type AccentVariant struct {
-	Accent   int     `json:"accent"`
-	Accented string  `json:"accented"`
-	Ml       string  `json:"ml"`
-	Syll     string  `json:"syll"`
-	Usage    float64 `json:"usage"`
 }
 
 //Clitic contains clitic analysis data

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/airenas/go-app/pkg/goapp"
+	"github.com/airenas/lt-text-to-ipa/internal/pkg/extapi"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/process"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/utils"
 	"github.com/pkg/errors"
@@ -33,7 +34,7 @@ func (p *accentuator) Process(data *process.Data) error {
 	inData := mapAccentInput(data)
 	if len(inData) > 0 {
 
-		var output []accentOutputElement
+		var output []extapi.AccentOutputElement
 		err := p.httpWrap.InvokeJSON(inData, &output)
 		if err != nil {
 			return err
@@ -48,21 +49,6 @@ func (p *accentuator) Process(data *process.Data) error {
 	return nil
 }
 
-type accentOutputElement struct {
-	Accent []accent `json:"accent"`
-	Word   string   `json:"word"`
-	Error  string   `json:"error"`
-}
-
-type accent struct {
-	MF       string                  `json:"mf"`
-	Mi       string                  `json:"mi"`
-	MiVdu    string                  `json:"mi_vdu"`
-	Mih      string                  `json:"mih"`
-	Error    string                  `json:"error"`
-	Variants []process.AccentVariant `json:"variants"`
-}
-
 func mapAccentInput(data *process.Data) []string {
 	res := []string{}
 	for _, w := range data.Words {
@@ -74,7 +60,7 @@ func mapAccentInput(data *process.Data) []string {
 	return res
 }
 
-func mapAccentOutput(data *process.Data, out []accentOutputElement) error {
+func mapAccentOutput(data *process.Data, out []extapi.AccentOutputElement) error {
 	i := 0
 	for _, w := range data.Words {
 		tgw := w.Tagged
@@ -92,7 +78,7 @@ func mapAccentOutput(data *process.Data, out []accentOutputElement) error {
 	return nil
 }
 
-func setAccent(w *process.ProcessedWord, out accentOutputElement) error {
+func setAccent(w *process.ProcessedWord, out extapi.AccentOutputElement) error {
 	if out.Error != "" {
 		if len(w.Tagged.String) >= 50 {
 			goapp.Log.Error(out.Error)
@@ -109,8 +95,8 @@ func setAccent(w *process.ProcessedWord, out accentOutputElement) error {
 	return nil
 }
 
-func findBestAccentVariant(acc []accent, mi string, lema string) *process.AccentVariant {
-	find := func(fa func(a *accent) bool, fv func(v *process.AccentVariant) bool) *process.AccentVariant {
+func findBestAccentVariant(acc []extapi.Accent, mi string, lema string) *extapi.AccentVariant {
+	find := func(fa func(a *extapi.Accent) bool, fv func(v *extapi.AccentVariant) bool) *extapi.AccentVariant {
 		for _, a := range acc {
 			if fa(&a) {
 				for _, v := range a.Variants {
@@ -122,24 +108,24 @@ func findBestAccentVariant(acc []accent, mi string, lema string) *process.Accent
 		}
 		return nil
 	}
-	fIsAccent := func(v *process.AccentVariant) bool { return v.Accent > 0 }
+	fIsAccent := func(v *extapi.AccentVariant) bool { return v.Accent > 0 }
 
-	if res := find(func(a *accent) bool { return a.Error == "" && a.MiVdu == mi && a.MF == lema }, fIsAccent); res != nil {
+	if res := find(func(a *extapi.Accent) bool { return a.Error == "" && a.MiVdu == mi && a.MF == lema }, fIsAccent); res != nil {
 		return res
 	}
 
-	if res := find(func(a *accent) bool { return a.Error == "" && a.MiVdu == mi }, fIsAccent); res != nil {
+	if res := find(func(a *extapi.Accent) bool { return a.Error == "" && a.MiVdu == mi }, fIsAccent); res != nil {
 		return res
 	}
 	// no mi filter
-	if res := find(func(a *accent) bool { return a.Error == "" }, fIsAccent); res != nil {
+	if res := find(func(a *extapi.Accent) bool { return a.Error == "" }, fIsAccent); res != nil {
 		return res
 	}
 	//no filter
-	return find(func(a *accent) bool { return true }, func(v *process.AccentVariant) bool { return true })
+	return find(func(a *extapi.Accent) bool { return true }, func(v *extapi.AccentVariant) bool { return true })
 }
 
-func countVariants(acc []accent) int {
+func countVariants(acc []extapi.Accent) int {
 	am := make(map[string]bool)
 	for _, a := range acc {
 		for _, v := range a.Variants {
@@ -151,7 +137,7 @@ func countVariants(acc []accent) int {
 	return len(am)
 }
 
-func collectMihs(acc []accent) []string {
+func collectMihs(acc []extapi.Accent) []string {
 	res := make([]string, 0)
 	for _, a := range acc {
 		if a.Mih != "" {
