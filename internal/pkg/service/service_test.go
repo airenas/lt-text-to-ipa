@@ -76,7 +76,7 @@ func TestWordTransciber(t *testing.T) {
 	initTest(t)
 	req := httptest.NewRequest(http.MethodGet, "/ipa/mama", nil)
 	pegomock.When(mockWordTranscriber.Process(pegomock.AnyString())).
-		ThenReturn(&api.WordInfo{Transcriptions: []api.Transcription{{IPAs: []string{"m am a"}}}}, nil)
+		ThenReturn(&api.WordInfo{Transcriptions: []*api.Transcription{{IPAs: []string{"m am a"}}}}, nil)
 
 	tEcho.ServeHTTP(tResp, req)
 
