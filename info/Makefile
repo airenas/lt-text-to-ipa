@@ -1,5 +1,5 @@
-generate: process.png
+generate: process.png processGET.png
 
-process.png: process.puml 
+%.png: %.puml 
 	cat $< | docker run --rm -i think/plantuml -tpng > $@_
 	mv $@_ $@
