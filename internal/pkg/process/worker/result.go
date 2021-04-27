@@ -67,7 +67,7 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 			}
 			res = append(res, rw)
 		} else if w.Tagged.Type == process.OtherWord {
-			res = append(res, &api.ResultWord{Type: "WORD", String: tgw.String, IPAType: ipaToString(None)})
+			res = append(res, &api.ResultWord{Type: "WORD", String: tgw.String, IPA: tgw.String, IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.SentenceEnd {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "//",
 				IPAType: ipaToString(Sep)})
