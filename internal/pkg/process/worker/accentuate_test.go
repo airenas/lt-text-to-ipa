@@ -205,7 +205,7 @@ func TestMapAccOutput_FailErrorTooLong(t *testing.T) {
 
 	err := mapAccentOutput(d, output)
 	if assert.NotNil(t, err) {
-		assert.Contains(t, err.Error(), "Wrong extapi.Accent, too long word: ")
+		assert.Contains(t, err.Error(), "Wrong accent, too long word: ")
 	}
 }
 

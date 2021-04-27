@@ -31,8 +31,6 @@ func TestWork(t *testing.T) {
 	res, err := worker.Process("olia")
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
-	//TODO
-	//assert.Equal(t, "mp3", )
 }
 
 func TestWork_Fails(t *testing.T) {
@@ -55,9 +53,6 @@ func TestWork_Several(t *testing.T) {
 		return nil
 	}}
 	worker.Add(processorMock1)
-	//TODO
-	//res, _ := worker.Process("olia")
-	//assert.Equal(t, "oliaadd", d.Text)
 }
 
 func TestWork_StopProcess(t *testing.T) {
