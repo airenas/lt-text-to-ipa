@@ -45,7 +45,15 @@ func (p *resultMaker) Process(data *process.Data) error {
 
 func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 	res := make([]*api.ResultWord, 0)
-	for i, w := range data.Words {
+	l := len(data.Words)
+	for i := 0; i < l; i++ {
+		w := data.Words[i]
+		if w.Clitic != nil && w.Clitic.Type == "PHRASE" {
+			rw, ni := collectPhrase(data.Words, i)
+			res = append(res, rw)
+			i = ni
+			continue
+		}
 		tgw := w.Tagged
 		if w.Tagged.Type == process.Word {
 			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPA: w.IPA,
@@ -84,4 +92,31 @@ func betweenClitics(words []*process.ProcessedWord, at int) bool {
 		return false
 	}
 	return words[at-1].Clitic != nil && words[at+1].Clitic != nil
+}
+
+func collectPhrase(words []*process.ProcessedWord, at int) (*api.ResultWord, int) {
+	l := len(words)
+	res := &api.ResultWord{Type: "WORD", IPAType: "PHRASE"}
+	li := at
+	ni := 0
+	for i := at; i < l; i++ {
+		w := words[i]
+		tgw := w.Tagged
+		if w.Tagged.Type == process.Word {
+			if w.Clitic != nil && w.Clitic.Type == "PHRASE" && w.Clitic.Pos == ni {
+				if ni == 0 {
+					res.IPA = w.IPA
+					res.String = tgw.String
+				} else {
+					res.IPA = res.IPA + "‿" + w.IPA
+					res.String = res.String + " " + tgw.String
+				}
+				ni++
+				li = i
+			} else {
+				break
+			}
+		}
+	}
+	return res, li
 }
