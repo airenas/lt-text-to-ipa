@@ -4,7 +4,7 @@
 
 ## Bendrai
 
-Transkribuojame tik žodžius kuriuos morfologinis analizatorius atpažista kaip kalbos dalis. Kiti žodžiai: santrumpos, numeriai ar šiaip neatpažinti žodžiai (gali būti šiūkšlės, pavardės ir t.t.), netranskribuojami. Jie rezultaų lange bus pateikti nepakeisti, tik kita spalva.
+Transkribuojame tik žodžius kuriuos morfologinis analizatorius atpažista kaip kalbos dalis. Kiti žodžiai: santrumpos, numeriai ar šiaip neatpažinti žodžiai (gali būti šiūkšlės, pavardės ir t.t.), netranskribuojami. Jie rezultatų lange bus pateikti nepakeisti, tik kita spalva.
 
 Sakinio pabaigos bus žymimos `//`. Sakinius nustatys dabar sintezavime naudojames *lex'as*.
 

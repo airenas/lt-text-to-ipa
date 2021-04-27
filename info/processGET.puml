@@ -1,0 +1,51 @@
+@startuml WordToIPA
+
+skinparam sequence {
+ParticipantBorderColor Black
+ActorBorderColor Black
+
+ParticipantBackgroundColor White
+ActorBackgroundColor White
+
+ArrowColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor lightgray
+
+BoxBorderColor black
+}
+skinparam databaseBackgroundColor White
+skinparam dataBaseBorderColor Blue
+
+hide footbox
+title One word to IPA process: /ipa/{word} GET method
+
+' skinparam handwritten true
+
+actor User
+participant "TextToIPA" as srv
+participant "Accenter" as accenter
+participant "Transcriber" as transcriber
+participant "TransToIPA" as toIPA
+
+User -> srv: /ipa/{word}
+activate srv
+
+srv -> accenter: 
+activate accenter
+accenter --> srv:
+deactivate accenter
+
+srv -> transcriber: 
+activate transcriber
+transcriber --> srv:
+deactivate transcriber
+
+srv -> toIPA: 
+activate toIPA
+toIPA --> srv:
+deactivate toIPA
+
+srv --> User: response
+deactivate srv
+
+@enduml

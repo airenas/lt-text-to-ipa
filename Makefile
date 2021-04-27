@@ -1,7 +1,7 @@
 -include Makefile.options
 
 commit_count=$(shell git rev-list --count HEAD)
-go_build_cmd=CGO_ENABLED=0 go build -installsuffix -cgo -ldflags "-X main.version=git-version.$(commit_count)" 
+go_build_cmd=CGO_ENABLED=0 go build -ldflags "-X main.version=git-version.$(commit_count)" 
 
 test: 
 	go test -v ./...

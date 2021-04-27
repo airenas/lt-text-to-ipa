@@ -1,0 +1,78 @@
+@startuml TextToIPA
+
+skinparam sequence {
+ParticipantBorderColor Black
+ActorBorderColor Black
+
+ParticipantBackgroundColor White
+ActorBackgroundColor White
+
+ArrowColor black
+LifeLineBorderColor black
+LifeLineBackgroundColor lightgray
+
+BoxBorderColor black
+}
+skinparam databaseBackgroundColor White
+skinparam dataBaseBorderColor Blue
+
+hide footbox
+title Text to IPA process: /ipa POST method
+
+' skinparam handwritten true
+
+actor User
+participant "TextToIPA" as srv
+participant "Tagger" as tagger
+participant "Lex" as lex
+participant "Morf" as morf
+participant "Accenter" as accenter
+participant "Clitics" as clitics
+participant "Transcriber" as transcriber
+participant "TransToIPA" as toIPA
+
+User -> srv: /ipa
+activate srv
+
+srv -> srv: Clean/fix text
+
+srv -> tagger: 
+activate tagger
+
+tagger -> lex: 
+activate lex
+lex --> tagger:
+deactivate lex
+
+tagger -> morf: 
+activate morf
+morf --> tagger:
+deactivate morf
+
+tagger --> srv:
+deactivate tagger
+
+srv -> accenter: 
+activate accenter
+accenter --> srv:
+deactivate accenter
+
+srv -> clitics: 
+activate clitics
+clitics --> srv:
+deactivate clitics
+
+srv -> transcriber: 
+activate transcriber
+transcriber --> srv:
+deactivate transcriber
+
+srv -> toIPA: 
+activate toIPA
+toIPA --> srv:
+deactivate toIPA
+
+srv --> User: response
+deactivate srv
+
+@enduml

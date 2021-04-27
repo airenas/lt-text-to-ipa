@@ -75,12 +75,13 @@ func TestTranscriber_Fails(t *testing.T) {
 func TestWordTransciber(t *testing.T) {
 	initTest(t)
 	req := httptest.NewRequest(http.MethodGet, "/ipa/mama", nil)
-	pegomock.When(mockWordTranscriber.Process(pegomock.AnyString())).ThenReturn(&api.WordInfo{IPAs: []string{"m am a"}}, nil)
+	pegomock.When(mockWordTranscriber.Process(pegomock.AnyString())).
+		ThenReturn(&api.WordInfo{Transcriptions: []*api.Transcription{{IPAs: []string{"m am a"}}}}, nil)
 
 	tEcho.ServeHTTP(tResp, req)
 
 	assert.Equal(t, http.StatusOK, tResp.Code)
-	assert.Equal(t, `{"ipas":["m am a"],"information":null}`,
+	assert.Equal(t, `{"word":"","transcription":[{"ipas":["m am a"],"information":null}]}`,
 		strings.TrimSpace(tResp.Body.String()))
 
 }
