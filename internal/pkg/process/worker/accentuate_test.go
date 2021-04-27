@@ -3,6 +3,7 @@ package worker
 import (
 	"testing"
 
+	"github.com/airenas/lt-text-to-ipa/internal/pkg/extapi"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/process"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/test/mocks"
 	"github.com/petergtz/pegomock"
@@ -43,8 +44,8 @@ func TestInvokeAccentuator(t *testing.T) {
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("word")})
 	pegomock.When(httpJSONMock.InvokeJSON(pegomock.AnyInterface(), pegomock.AnyInterface())).Then(
 		func(params []pegomock.Param) pegomock.ReturnValues {
-			*params[1].(*[]accentOutputElement) = []accentOutputElement{{Word: "word",
-				Accent: []accent{{Mi: "mi", Variants: []process.AccentVariant{{Accent: 101}}}}}}
+			*params[1].(*[]extapi.AccentOutputElement) = []extapi.AccentOutputElement{{Word: "word",
+				Accent: []extapi.Accent{{Mi: "mi", Variants: []extapi.AccentVariant{{Accent: 101}}}}}}
 			return []pegomock.ReturnValue{nil}
 		})
 	err := pr.Process(d)
@@ -61,7 +62,7 @@ func TestInvokeAccentuator_FailOutput(t *testing.T) {
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("word")})
 	pegomock.When(httpJSONMock.InvokeJSON(pegomock.AnyInterface(), pegomock.AnyInterface())).Then(
 		func(params []pegomock.Param) pegomock.ReturnValues {
-			*params[1].(*[]accentOutputElement) = []accentOutputElement{}
+			*params[1].(*[]extapi.AccentOutputElement) = []extapi.AccentOutputElement{}
 			return []pegomock.ReturnValue{nil}
 		})
 	err := pr.Process(d)
@@ -107,8 +108,8 @@ func TestMapAccOutput(t *testing.T) {
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSpace(" ")})
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("v2")})
 
-	output := []accentOutputElement{{Word: "v2",
-		Accent: []accent{{Mi: "mi", Variants: []process.AccentVariant{{Accent: 101,
+	output := []extapi.AccentOutputElement{{Word: "v2",
+		Accent: []extapi.Accent{{Mi: "mi", Variants: []extapi.AccentVariant{{Accent: 101,
 			Syll: "v-1"}}}}}}
 
 	err := mapAccentOutput(d, output)
@@ -123,10 +124,10 @@ func TestMapAccOutput_FindBest(t *testing.T) {
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep("!")})
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v2", Mi: "mi2", Type: process.Word}})
 
-	output := []accentOutputElement{{Word: "v2",
-		Accent: []accent{{MiVdu: "mi1", Variants: []process.AccentVariant{{Accent: 101,
+	output := []extapi.AccentOutputElement{{Word: "v2",
+		Accent: []extapi.Accent{{MiVdu: "mi1", Variants: []extapi.AccentVariant{{Accent: 101,
 			Syll: "v-1"}}},
-			{MiVdu: "mi2", Variants: []process.AccentVariant{{Accent: 102,
+			{MiVdu: "mi2", Variants: []extapi.AccentVariant{{Accent: 102,
 				Syll: "v-1"}}},
 		}}}
 
@@ -141,10 +142,10 @@ func TestMapAccOutput_Error(t *testing.T) {
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep("!")})
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v2", Mi: "mi2", Type: process.Word}})
 
-	output := []accentOutputElement{{Word: "v2",
-		Accent: []accent{{MiVdu: "mi1", Error: "err", Variants: []process.AccentVariant{{Accent: 0,
+	output := []extapi.AccentOutputElement{{Word: "v2",
+		Accent: []extapi.Accent{{MiVdu: "mi1", Error: "err", Variants: []extapi.AccentVariant{{Accent: 0,
 			Syll: "v-1"}}},
-			{MiVdu: "mi2", Variants: []process.AccentVariant{{Accent: 102,
+			{MiVdu: "mi2", Variants: []extapi.AccentVariant{{Accent: 102,
 				Syll: "v-2"}}},
 		}}}
 
@@ -158,10 +159,10 @@ func TestMapAccOutput_WithAccent(t *testing.T) {
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep("!")})
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v2", Mi: "mi2", Type: process.Word}})
 
-	output := []accentOutputElement{{Word: "v2",
-		Accent: []accent{
-			{MiVdu: "mi1", Error: "err", Variants: []process.AccentVariant{{Accent: 0, Syll: "v-1"}}},
-			{MiVdu: "mi2", Variants: []process.AccentVariant{
+	output := []extapi.AccentOutputElement{{Word: "v2",
+		Accent: []extapi.Accent{
+			{MiVdu: "mi1", Error: "err", Variants: []extapi.AccentVariant{{Accent: 0, Syll: "v-1"}}},
+			{MiVdu: "mi2", Variants: []extapi.AccentVariant{
 				{Accent: 0, Syll: "v-2"},
 				{Accent: 103, Syll: "v-3"},
 			}},
@@ -178,9 +179,9 @@ func TestMapAccOutput_FailError(t *testing.T) {
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v2", Mi: "mi2", Type: process.Word}})
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{String: "v2", Mi: "mi2", Type: process.Word}})
 
-	output := []accentOutputElement{{Word: "v2",
-		Accent: []accent{
-			{MiVdu: "mi1", Variants: []process.AccentVariant{{Accent: 0, Syll: "v-1"}}},
+	output := []extapi.AccentOutputElement{{Word: "v2",
+		Accent: []extapi.Accent{
+			{MiVdu: "mi1", Variants: []extapi.AccentVariant{{Accent: 0, Syll: "v-1"}}},
 		}},
 		{Word: "v2", Error: "error olia"}}
 
@@ -196,21 +197,21 @@ func TestMapAccOutput_FailErrorTooLong(t *testing.T) {
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{
 		String: "loooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooong", Mi: "mi2", Type: process.Word}})
 
-	output := []accentOutputElement{{Word: "v2",
-		Accent: []accent{
-			{MiVdu: "mi1", Variants: []process.AccentVariant{{Accent: 0, Syll: "v-1"}}},
+	output := []extapi.AccentOutputElement{{Word: "v2",
+		Accent: []extapi.Accent{
+			{MiVdu: "mi1", Variants: []extapi.AccentVariant{{Accent: 0, Syll: "v-1"}}},
 		}},
 		{Word: "v2", Error: "error olia"}}
 
 	err := mapAccentOutput(d, output)
 	if assert.NotNil(t, err) {
-		assert.Contains(t, err.Error(), "Wrong accent, too long word: ")
+		assert.Contains(t, err.Error(), "Wrong extapi.Accent, too long word: ")
 	}
 }
 
 func TestFindBest_UseLemma(t *testing.T) {
-	acc := []accent{{MiVdu: "mi2", MF: "lema1", Variants: []process.AccentVariant{{Accent: 101}}},
-		{MiVdu: "mi2", MF: "lema", Variants: []process.AccentVariant{{Accent: 103}}}}
+	acc := []extapi.Accent{{MiVdu: "mi2", MF: "lema1", Variants: []extapi.AccentVariant{{Accent: 101}}},
+		{MiVdu: "mi2", MF: "lema", Variants: []extapi.AccentVariant{{Accent: 103}}}}
 	res := findBestAccentVariant(acc, "mi2", "lema")
 
 	assert.Equal(t, 103, res.Accent)

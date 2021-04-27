@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/airenas/go-app/pkg/goapp"
+	"github.com/airenas/lt-text-to-ipa/internal/pkg/extapi"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/process"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/utils"
 	"github.com/pkg/errors"
@@ -30,7 +31,7 @@ func (p *transcriber) Process(data *process.Data) error {
 		return err
 	}
 	if len(inData) > 0 {
-		var output []transOutput
+		var output []extapi.TransOutput
 		err := p.httpWrap.InvokeJSON(inData, &output)
 		if err != nil {
 			return err
@@ -45,33 +46,14 @@ func (p *transcriber) Process(data *process.Data) error {
 	return nil
 }
 
-type transInput struct {
-	Word string `json:"word"`
-	Syll string `json:"syll"`
-	User string `json:"user"`
-	Ml   string `json:"ml"`
-	Rc   string `json:"rc"`
-	Acc  int    `json:"acc"`
-}
-
-type transOutput struct {
-	Transcription []trans `json:"transcription"`
-	Word          string  `json:"word"`
-	Error         string  `json:"error"`
-}
-
-type trans struct {
-	Transcription string `json:"transcription"`
-}
-
-func mapTransInput(data *process.Data) ([]*transInput, error) {
-	res := []*transInput{}
-	var pr *transInput
+func mapTransInput(data *process.Data) ([]*extapi.TransInput, error) {
+	res := []*extapi.TransInput{}
+	var pr *extapi.TransInput
 	_ = pr
 	for _, w := range data.Words {
 		tgw := w.Tagged
 		if tgw.Type == process.Word {
-			ti := &transInput{}
+			ti := &extapi.TransInput{}
 			tword := transWord(w)
 			ti.Word = tword
 			if w.AccentVariant == nil {
@@ -103,7 +85,7 @@ func transWord(w *process.ProcessedWord) string {
 	return strings.ToLower(w.Tagged.String)
 }
 
-func mapTransOutput(data *process.Data, out []transOutput) error {
+func mapTransOutput(data *process.Data, out []extapi.TransOutput) error {
 	i := 0
 	for _, w := range data.Words {
 		tgw := w.Tagged
@@ -121,7 +103,7 @@ func mapTransOutput(data *process.Data, out []transOutput) error {
 	return nil
 }
 
-func setTrans(w *process.ProcessedWord, out transOutput) error {
+func setTrans(w *process.ProcessedWord, out extapi.TransOutput) error {
 	if out.Error != "" {
 		return errors.Errorf("Transcriber error for '%s'('%s'): %s", transWord(w), out.Word, out.Error)
 	}
