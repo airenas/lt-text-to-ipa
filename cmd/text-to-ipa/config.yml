@@ -5,9 +5,9 @@ logger:
 tagger:
   url: http://localhost:8092/tag
 accenter:
-  url: http://192.168.1.71:7021/accent?human=true&roe=true  
+  url: http://192.168.1.71:7021/accent?human=true&roe=true&all=true  
 transcriber:
-  url: http://192.168.1.71:7027/transcription?gem=gem1&joinatsi=true 
+  url: http://192.168.1.71:7027/transcription?gem=gem1&joinatsi=true&all=true
 ipaConverter:
   url: http://127.0.0.1:3000/sampa2ipa_list
 cliticsDetector:

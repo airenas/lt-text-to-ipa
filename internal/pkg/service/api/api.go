@@ -11,8 +11,8 @@ type ResultWord struct {
 
 // WordInfo is a service output for one word
 type WordInfo struct {
-	Word           string          `json:"word"`
-	Transcriptions []Transcription `json:"transcription"`
+	Word           string           `json:"word"`
+	Transcriptions []*Transcription `json:"transcription"`
 }
 
 // Transcription is a service output for one transcription variant

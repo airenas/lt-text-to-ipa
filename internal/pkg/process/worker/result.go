@@ -99,7 +99,7 @@ func betweenClitics(words []*process.ProcessedWord, at int) bool {
 	if at == 0 || at == len(words)-1 {
 		return false
 	}
-	return words[at-1].Clitic != nil && words[at+1].Clitic != nil
+	return words[at-1].Clitic != nil && words[at+1].Clitic != nil && (words[at-1].Clitic.Pos+1) == words[at+1].Clitic.Pos
 }
 
 func collectPhrase(words []*process.ProcessedWord, at int) (*api.ResultWord, int) {
@@ -135,6 +135,6 @@ func makeInfo(ipa string, mis []string) *api.WordInfo {
 	for i, mi := range mis {
 		rmis[i].MI = mi
 	}
-	res.Transcriptions = []api.Transcription{{IPAs: []string{ipa}, Information: rmis}}
+	res.Transcriptions = []*api.Transcription{{IPAs: []string{ipa}, Information: rmis}}
 	return res
 }
