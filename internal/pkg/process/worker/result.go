@@ -50,16 +50,24 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 		w := data.Words[i]
 		if w.Clitic != nil && w.Clitic.Type == "PHRASE" {
 			rw, ni := collectPhrase(data.Words, i)
+			rw.Info = makeInfo(rw.IPA, []string{"morfologinė samplaika"})
+			rw.Info.Word = rw.String
 			res = append(res, rw)
 			i = ni
 			continue
 		}
 		tgw := w.Tagged
 		if w.Tagged.Type == process.Word {
-			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPA: w.IPA,
-				IPAType: getIPAWordType(w)})
+			rw := &api.ResultWord{Type: "WORD", String: tgw.String, IPA: w.IPA,
+				IPAType: getIPAWordType(w)}
+			if w.Clitic != nil && w.Clitic.Type == "CLITIC" && w.Clitic.AccentedType == "NONE" {
+				rw.Info = makeInfo(rw.IPA, w.Mihs)
+				rw.Info.Word = tgw.String
+				rw.IPAType = "ONE"
+			}
+			res = append(res, rw)
 		} else if w.Tagged.Type == process.OtherWord {
-			res = append(res, &api.ResultWord{Type: "WORD", String: w.Tagged.String, IPAType: ipaToString(None)})
+			res = append(res, &api.ResultWord{Type: "WORD", String: tgw.String, IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.SentenceEnd {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "//",
 				IPAType: ipaToString(Sep)})
@@ -119,4 +127,14 @@ func collectPhrase(words []*process.ProcessedWord, at int) (*api.ResultWord, int
 		}
 	}
 	return res, li
+}
+
+func makeInfo(ipa string, mis []string) *api.WordInfo {
+	res := &api.WordInfo{}
+	rmis := make([]api.MIInfo, len(mis))
+	for i, mi := range mis {
+		rmis[i].MI = mi
+	}
+	res.Transcriptions = []api.Transcription{{IPAs: []string{ipa}, Information: rmis}}
+	return res
 }

@@ -2,10 +2,11 @@ package api
 
 // ResultWord is service output
 type ResultWord struct {
-	Type    string `json:"type"`
-	String  string `json:"string,omitempty"`
-	IPA     string `json:"ipa,omitempty"`
-	IPAType string `json:"ipaType,omitempty"`
+	Type    string    `json:"type"`
+	String  string    `json:"string,omitempty"`
+	IPA     string    `json:"ipa,omitempty"`
+	IPAType string    `json:"ipaType,omitempty"`
+	Info    *WordInfo `json:"info,omitempty"`
 }
 
 // WordInfo is a service output for one word

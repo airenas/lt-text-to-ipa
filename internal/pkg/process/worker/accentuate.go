@@ -104,6 +104,7 @@ func setAccent(w *process.ProcessedWord, out accentOutputElement) error {
 		return errors.Errorf("Words do not match '%s' vs '%s'", w.Tagged.String, out.Word)
 	}
 	w.AccentVariant = findBestAccentVariant(out.Accent, w.Tagged.Mi, w.Tagged.Lemma)
+	w.Mihs = collectMihs(out.Accent)
 	w.AccentCount = countVariants(out.Accent)
 	return nil
 }
@@ -148,4 +149,14 @@ func countVariants(acc []accent) int {
 		}
 	}
 	return len(am)
+}
+
+func collectMihs(acc []accent) []string {
+	res := make([]string, 0)
+	for _, a := range acc {
+		if a.Mih != "" {
+			res = append(res, a.Mih)
+		}
+	}
+	return res
 }

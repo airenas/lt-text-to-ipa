@@ -17,6 +17,7 @@ type ProcessedWord struct {
 	Tagged             TaggedWord
 	AccentVariant      *AccentVariant
 	AccentCount        int
+	Mihs               []string
 	TranscriptionCount int
 	Transcription      string
 	IPA                string
