@@ -20,3 +20,5 @@ cmd/text-to-ipa/__debug_bin
 build/data/**
 deploy/local/.env
 deploy/local/Makefile.options
+deploy/klc/services/.env
+deploy/klc/Makefile.options

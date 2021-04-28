@@ -1,0 +1,51 @@
+version: '3.4'
+
+x-logging:
+  &default-logging
+  options:
+    max-size: '10m'
+    max-file: '3'
+  driver: json-file
+
+services:
+
+  text-to-ipa:
+    image: airenas/text-to-ipa:${SERVICE_VERSION}
+    container_name: text-to-ip
+    restart: unless-stopped
+    logging: *default-logging
+    environment:
+      - LOGGER_LEVEL=DEBUG
+      - TAGGER_URL=http://tagger:8000/tag
+      - ACCENTER_URL=http://accenter:8000/accent?human=true&roe=true&all=true
+      - TRANSCRIBER_URL=http://transcriber:8000/transcription?gem=gem1&joinatsi=true&all=true
+      - CLITICSDETECTOR_URL=http://clitics:8000/clitics
+      - IPACONVERTER_URL=http://sampa-to-ipa:3000/sampa2ipa_list
+    labels:
+     - "traefik.frontend.rule=PathPrefixStrip:/text-transcriber/"
+     - "traefik.port=8000"
+
+  transcriber:
+    container_name: transcriber
+    image: airenas/transcriber:${TRANSCRIBER_SERVICE_VERSION}
+    volumes:
+     - ${ACCENTER_DATA_DIR}/resources:/resources:ro
+    restart: unless-stopped
+    logging: *default-logging
+
+  clitics:
+    image: airenas/clitics:0.1.206
+    environment:
+      - SECRET=${CLITICS_SECRET}
+    restart: unless-stopped
+    logging: *default-logging  
+
+  sampa-to-ipa:
+    image: intelektikalt/sampa-to-ipa:0.1.3    
+    restart: unless-stopped
+    logging: *default-logging
+
+networks:
+  default:
+    external:
+      name: proxy_default # goes from proxy compose
