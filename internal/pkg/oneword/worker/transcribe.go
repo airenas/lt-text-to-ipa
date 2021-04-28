@@ -20,7 +20,7 @@ func NewTranscriber(urlStr string) (oneword.Processor, error) {
 	var err error
 	res.httpWrap, err = utils.NewHTTWrap(urlStr)
 	if err != nil {
-		return nil, errors.Wrap(err, "Can't init http client")
+		return nil, errors.Wrap(err, "can't init http client")
 	}
 	return res, nil
 }
