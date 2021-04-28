@@ -17,7 +17,7 @@ const (
 	SepClitic
 )
 
-var ipaTypeStringEnum = map[ipaTypeEnum]string{None: "NONE", WordOne: "ONE", WordMultiple: "MULTIPLE", 
+var ipaTypeStringEnum = map[ipaTypeEnum]string{None: "NONE", WordOne: "ONE", WordMultiple: "MULTIPLE",
 	SepClitic: "SEP_CLITIC"}
 
 func ipaToString(t ipaTypeEnum) string {
@@ -58,6 +58,7 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 		tgw := w.Tagged
 		if w.Tagged.Type == process.Word {
 			rw := &api.ResultWord{Type: "WORD", String: tgw.String, IPA: w.IPA,
+				Trans:   getTrans(data.ReturnTrans, w.Transcription),
 				IPAType: getIPAWordType(w)}
 			if w.Clitic != nil && w.Clitic.Type == "CLITIC" && w.Clitic.AccentedType == "NONE" {
 				rw.Info = makeInfo(rw.IPA, w.Mihs)
@@ -136,4 +137,11 @@ func makeInfo(ipa string, mis []string) *api.WordInfo {
 	}
 	res.Transcriptions = []*api.Transcription{{IPAs: []string{ipa}, Information: rmis}}
 	return res
+}
+
+func getTrans(use bool, tr string) string {
+	if use {
+		return tr
+	}
+	return ""
 }
