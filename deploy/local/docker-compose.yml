@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  text-to-ipa:
+    image: airenas/text-to-ipa:${SERVICE_VERSION}
+    ports:
+      - "${SERVICE_PORT}:8000"
+    environment:
+      - LOGGER_LEVEL=DEBUG
+      - TAGGER_URL=http://tagger:8000/tag
+      - ACCENTER_URL=http://192.168.1.71:7021/accent?human=true&roe=true&all=true
+      - TRANSCRIBER_URL=http://192.168.1.71:7027/transcription?gem=gem1&joinatsi=true&all=true
+      - CLITICSDETECTOR_URL=http://clitics:8000/clitics
+      - IPACONVERTER_URL=http://sampa-to-ipa:3000/sampa2ipa_list
+
+  tagger:
+    image: airenas/tagger:${TAGGER_VERSION}
+    environment:
+      - MORPHOLOGY_URL=http://semantika:8090/morphology
+      - SEGMENTATION_URL=http://lex:8080/
+
+  semantika:
+    image: semantikadocker.vdu.lt/v2/morph:0.2
+
+  lex:
+    image: semantikadocker.vdu.lt/lex:latest
+
+  clitics:
+    image: airenas/clitics:0.1.205
+    environment:
+      - SECRET=${CLITICS_SECRET} 
+
+  sampa-to-ipa:
+    image: intelektikalt/sampa-to-ipa:0.1.3    
+   
