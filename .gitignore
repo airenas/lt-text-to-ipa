@@ -17,3 +17,4 @@ bin/**
 internal/pkg/test/mocks/**
 .vscode/launch.json
 cmd/text-to-ipa/__debug_bin
+build/data/**
