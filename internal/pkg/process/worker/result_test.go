@@ -63,3 +63,52 @@ func TestMapClitic(t *testing.T) {
 		assert.Equal(t, "w o r d 2", res[2].IPA)
 	}
 }
+
+func TestMapSep(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep("\n")})
+	res, err := mapResult(d)
+	assert.Nil(t, err)
+	if assert.Equal(t, 1, len(res)) {
+		assert.Equal(t, "\n", res[0].IPA)
+		assert.Equal(t, "NONE", res[0].IPAType)
+		assert.Equal(t, "SEPARATOR", res[0].Type)
+	}
+}
+
+func TestMapSepComma(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep(",")})
+	res, err := mapResult(d)
+	assert.Nil(t, err)
+	if assert.Equal(t, 1, len(res)) {
+		assert.Equal(t, "/", res[0].IPA)
+		assert.Equal(t, "NONE", res[0].IPAType)
+		assert.Equal(t, "SEPARATOR", res[0].Type)
+	}
+}
+
+func TestMapSepSentence(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Type: process.SentenceEnd}})
+	res, err := mapResult(d)
+	assert.Nil(t, err)
+	if assert.Equal(t, 1, len(res)) {
+		assert.Equal(t, "//", res[0].IPA)
+		assert.Equal(t, "NONE", res[0].IPAType)
+		assert.Equal(t, "SEPARATOR", res[0].Type)
+	}
+}
+
+func TestMapOtherWord(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("8num")})
+	d.Words[0].Tagged.Type = process.OtherWord
+	res, err := mapResult(d)
+	assert.Nil(t, err)
+	if assert.Equal(t, 1, len(res)) {
+		assert.Equal(t, "8num", res[0].IPA)
+		assert.Equal(t, "NONE", res[0].IPAType)
+		assert.Equal(t, "WORD", res[0].Type)
+	}
+}

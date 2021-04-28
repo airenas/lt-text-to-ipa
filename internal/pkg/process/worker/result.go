@@ -14,11 +14,10 @@ const (
 	None ipaTypeEnum = iota + 1
 	WordOne
 	WordMultiple
-	Sep
 	SepClitic
 )
 
-var ipaTypeStringEnum = map[ipaTypeEnum]string{None: "NONE", WordOne: "ONE", WordMultiple: "MULTIPLE", Sep: "SEP",
+var ipaTypeStringEnum = map[ipaTypeEnum]string{None: "NONE", WordOne: "ONE", WordMultiple: "MULTIPLE", 
 	SepClitic: "SEP_CLITIC"}
 
 func ipaToString(t ipaTypeEnum) string {
@@ -70,16 +69,16 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 			res = append(res, &api.ResultWord{Type: "WORD", String: tgw.String, IPA: tgw.String, IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.SentenceEnd {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "//",
-				IPAType: ipaToString(Sep)})
+				IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.Space && betweenClitics(data.Words, i) {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "‿",
 				IPAType: ipaToString(SepClitic)})
 		} else if w.Tagged.Type == process.Separator && tgw.String == "," {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "/",
-				IPAType: ipaToString(Sep)})
+				IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.Separator && tgw.String == "\n" {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "\n",
-				IPAType: ipaToString(Sep)})
+				IPAType: ipaToString(None)})
 		} else {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: w.Tagged.String,
 				IPA: fmt.Sprintf("%*s", len(tgw.String), " "), IPAType: ipaToString(None)})
