@@ -68,7 +68,7 @@ func mapTransOutput(data *oneword.Data, out []extapi.TransOutput) error {
 		if out[0].Error != "" {
 			return errors.Errorf("transcriber error for '%s'('%s'): %s", data.Word, out[0].Word, out[0].Error)
 		}
-		w.Transcriptions = make([]string, 0)
+		w.Transcriptions = nil
 		for _, t := range out[i].Transcription {
 			if t.Transcription != "" {
 				w.Transcriptions = append(w.Transcriptions, dropQMarks(t.Transcription))
