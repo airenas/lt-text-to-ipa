@@ -52,7 +52,8 @@ func TestNotFound(t *testing.T) {
 func TestTransciber(t *testing.T) {
 	initTest(t)
 	req := httptest.NewRequest(http.MethodPost, "/ipa", strings.NewReader("mama"))
-	pegomock.When(mockTranscriber.Process(pegomock.AnyString())).ThenReturn([]*api.ResultWord{{Type: "WORD", String: "mama", IPA: "m a m a"}}, nil)
+	pegomock.When(mockTranscriber.Process(pegomock.AnyString(), pegomock.AnyBool())).
+		ThenReturn([]*api.ResultWord{{Type: "WORD", String: "mama", IPA: "m a m a"}}, nil)
 
 	tEcho.ServeHTTP(tResp, req)
 
@@ -65,7 +66,8 @@ func TestTransciber(t *testing.T) {
 func TestTranscriber_Fails(t *testing.T) {
 	initTest(t)
 	req := httptest.NewRequest("POST", "/ipa", strings.NewReader("mama"))
-	pegomock.When(mockTranscriber.Process(pegomock.AnyString())).ThenReturn(nil, errors.New("olia"))
+	pegomock.When(mockTranscriber.Process(pegomock.AnyString(), pegomock.AnyBool())).
+		ThenReturn(nil, errors.New("olia"))
 
 	tEcho.ServeHTTP(tResp, req)
 
@@ -75,7 +77,7 @@ func TestTranscriber_Fails(t *testing.T) {
 func TestWordTransciber(t *testing.T) {
 	initTest(t)
 	req := httptest.NewRequest(http.MethodGet, "/ipa/mama", nil)
-	pegomock.When(mockWordTranscriber.Process(pegomock.AnyString())).
+	pegomock.When(mockWordTranscriber.Process(pegomock.AnyString(), pegomock.AnyBool())).
 		ThenReturn(&api.WordInfo{Transcriptions: []*api.Transcription{{IPAs: []string{"m am a"}}}}, nil)
 
 	tEcho.ServeHTTP(tResp, req)
@@ -89,7 +91,8 @@ func TestWordTransciber(t *testing.T) {
 func TestWordTransciber_Fails(t *testing.T) {
 	initTest(t)
 	req := httptest.NewRequest("POST", "/ipa", strings.NewReader("mama"))
-	pegomock.When(mockTranscriber.Process(pegomock.AnyString())).ThenReturn(nil, errors.New("olia"))
+	pegomock.When(mockTranscriber.Process(pegomock.AnyString(), pegomock.AnyBool())).
+		ThenReturn(nil, errors.New("olia"))
 
 	tEcho.ServeHTTP(tResp, req)
 

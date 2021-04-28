@@ -8,6 +8,7 @@ import (
 // Data working data for one request
 type Data struct {
 	OriginalText string
+	ReturnTrans  bool
 	Text         string
 
 	Words []*ProcessedWord

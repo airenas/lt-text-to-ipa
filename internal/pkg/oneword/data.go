@@ -4,7 +4,9 @@ import "github.com/airenas/lt-text-to-ipa/internal/pkg/service/api"
 
 // Data working data for one word processing
 type Data struct {
-	Word  string
+	Word        string
+	ReturnTrans bool
+
 	Words []*WorkingWord
 
 	Result *api.WordInfo

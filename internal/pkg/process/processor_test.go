@@ -29,7 +29,7 @@ func TestWork(t *testing.T) {
 		d.Result = []*api.ResultWord{}
 		return nil
 	}
-	res, err := worker.Process("olia")
+	res, err := worker.Process("olia", false)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 	//TODO
@@ -41,7 +41,7 @@ func TestWork_Fails(t *testing.T) {
 	processorMock.f = func(d *Data) error {
 		return errors.New("olia")
 	}
-	res, err := worker.Process("olia")
+	res, err := worker.Process("olia", false)
 	assert.NotNil(t, err)
 	assert.Nil(t, res)
 }
@@ -72,7 +72,7 @@ func TestWork_StopProcess(t *testing.T) {
 		return nil
 	}}
 	worker.Add(processorMock1)
-	res, err := worker.Process("olia")
+	res, err := worker.Process("olia", false)
 	assert.Nil(t, res)
 	assert.NotNil(t, err)
 }

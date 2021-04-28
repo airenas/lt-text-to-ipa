@@ -5,6 +5,7 @@ type ResultWord struct {
 	Type    string    `json:"type"`
 	String  string    `json:"string,omitempty"`
 	IPA     string    `json:"ipa,omitempty"`
+	Trans   string    `json:"trans,omitempty"`
 	IPAType string    `json:"ipaType,omitempty"`
 	Info    *WordInfo `json:"info,omitempty"`
 }
@@ -18,6 +19,7 @@ type WordInfo struct {
 // Transcription is a service output for one transcription variant
 type Transcription struct {
 	IPAs        []string `json:"ipas"`
+	Trans       []string `json:"trans,omitempty"`
 	Information []MIInfo `json:"information"`
 }
 

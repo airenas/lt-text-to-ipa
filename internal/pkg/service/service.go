@@ -19,12 +19,12 @@ import (
 type (
 	// Transcriber returns words IPA transcriptiops array
 	Transcriber interface {
-		Process(string) ([]*api.ResultWord, error)
+		Process(string, bool) ([]*api.ResultWord, error)
 	}
 
 	// TranscriberOne returns possible transcription wariants for one word
 	WordTranscriber interface {
-		Process(string) (*api.WordInfo, error)
+		Process(string, bool) (*api.WordInfo, error)
 	}
 
 	//Data is service operation data
@@ -100,7 +100,7 @@ func handleText(data *Data) func(echo.Context) error {
 			return err
 		}
 
-		res, err := data.Transcriber.Process(text)
+		res, err := data.Transcriber.Process(text, c.QueryParam("returnTrans") == "1")
 		if err != nil {
 			goapp.Log.Error(err)
 			return echo.NewHTTPError(http.StatusInternalServerError, "Can't segment")
@@ -126,7 +126,7 @@ func handleWord(data *Data) func(echo.Context) error {
 			return echo.NewHTTPError(http.StatusBadRequest, "No word")
 		}
 
-		res, err := data.WordTranscriber.Process(word)
+		res, err := data.WordTranscriber.Process(word, c.QueryParam("returnTrans") == "1")
 		if err != nil {
 			goapp.Log.Error(errors.Wrap(err, "Cannot process "+word))
 			return echo.NewHTTPError(http.StatusInternalServerError, "Cannot process "+word)
