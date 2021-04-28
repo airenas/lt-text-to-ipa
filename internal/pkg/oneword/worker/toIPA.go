@@ -50,7 +50,7 @@ func mapToIPAInput(data *oneword.Data) []*extapi.IPAInput {
 		}
 	}
 	res := make([]*extapi.IPAInput, 0)
-	for k, _ := range rs {
+	for k := range rs {
 		res = append(res, &extapi.IPAInput{Transcription: k})
 	}
 	return res

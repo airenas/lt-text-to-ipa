@@ -2,6 +2,7 @@ package worker
 
 import (
 	"github.com/airenas/go-app/pkg/goapp"
+	"github.com/airenas/lt-text-to-ipa/internal/pkg/extapi"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/process"
 	"github.com/airenas/lt-text-to-ipa/internal/pkg/utils"
 	"github.com/pkg/errors"
@@ -26,7 +27,7 @@ func (p *toIPA) Process(data *process.Data) error {
 	inData := mapToIPAInput(data)
 	if len(inData) > 0 {
 
-		var output []ipaOutput
+		var output []extapi.IPAOutput
 		err := p.httpWrap.InvokeJSON(inData, &output)
 		if err != nil {
 			return err
@@ -41,27 +42,18 @@ func (p *toIPA) Process(data *process.Data) error {
 	return nil
 }
 
-type ipaInput struct {
-	Transcription string `json:"transcription"`
-}
-
-type ipaOutput struct {
-	Transcription string `json:"transcription"`
-	IPA           string `json:"ipa"`
-}
-
-func mapToIPAInput(data *process.Data) []*ipaInput {
-	res := make([]*ipaInput, 0)
+func mapToIPAInput(data *process.Data) []*extapi.IPAInput {
+	res := make([]*extapi.IPAInput, 0)
 	for _, w := range data.Words {
 		tgw := w.Tagged
 		if tgw.Type == process.Word {
-			res = append(res, &ipaInput{Transcription: w.Transcription})
+			res = append(res, &extapi.IPAInput{Transcription: w.Transcription})
 		}
 	}
 	return res
 }
 
-func mapIPAOutput(data *process.Data, out []ipaOutput) error {
+func mapIPAOutput(data *process.Data, out []extapi.IPAOutput) error {
 	i := 0
 	for _, w := range data.Words {
 		tgw := w.Tagged

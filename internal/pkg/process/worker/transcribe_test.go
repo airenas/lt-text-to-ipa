@@ -112,24 +112,6 @@ func TestMapTransInput(t *testing.T) {
 	assert.Equal(t, "", inp[1].Syll)
 }
 
-// func TestMapTransInput_RC(t *testing.T) {
-// 	d := newTestData()
-// 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("v1"),
-// 		AccentVariant: &extapi.AccentVariant{Accent: 103, Syll: "o-lia"}})
-// 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("word"),
-// 		AccentVariant: &extapi.AccentVariant{Accent: 103}})
-// 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("word1"),
-// 		AccentVariant: &extapi.AccentVariant{Accent: 103}})
-// 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep(",")})
-// 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("word2"),
-// 		AccentVariant: &extapi.AccentVariant{Accent: 103}})
-// 	inp, err := mapTransInput(d)
-// 	assert.Nil(t, err)
-// 	assert.Equal(t, "word", inp[0].Rc)
-// 	assert.Equal(t, "word1", inp[1].Rc)
-// 	assert.Equal(t, "", inp[2].Rc)
-// }
-
 func TestMapTransInput_Space(t *testing.T) {
 	d := newTestData()
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("olia"), AccentVariant: &extapi.AccentVariant{Accent: 103, Syll: "o-lia"}})
