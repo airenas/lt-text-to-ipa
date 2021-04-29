@@ -38,8 +38,8 @@ func TestMapPhrase(t *testing.T) {
 	assert.Nil(t, err)
 	if assert.Equal(t, 1, len(res)) {
 		assert.Equal(t, "w o r d‿w o r d 2", res[0].IPA)
-		assert.Equal(t, "WORD", res[0].Type)
-		assert.Equal(t, "PHRASE", res[0].IPAType)
+		assert.Equal(t, "PHRASE", res[0].Type)
+		assert.Equal(t, "ONE", res[0].IPAType)
 		assert.Equal(t, "morfologinė samplaika", res[0].Info.Transcriptions[0].Information[0].MI)
 	}
 }

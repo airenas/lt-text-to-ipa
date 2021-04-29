@@ -5,7 +5,7 @@ import "github.com/airenas/lt-text-to-ipa/internal/pkg/service/api"
 // Data working data for one word processing
 type Data struct {
 	Word        string
-	ReturnTrans bool
+	ReturnSAMPA bool
 
 	Words []*WorkingWord
 

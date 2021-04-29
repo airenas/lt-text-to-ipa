@@ -58,7 +58,7 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 		tgw := w.Tagged
 		if w.Tagged.Type == process.Word {
 			rw := &api.ResultWord{Type: "WORD", String: tgw.String, IPA: w.IPA,
-				Trans:   getTrans(data.ReturnTrans, w.Transcription),
+				Trans:   getTrans(data.ReturnSAMPA, w.Transcription),
 				IPAType: getIPAWordType(w)}
 			if w.Clitic != nil && w.Clitic.Type == "CLITIC" && w.Clitic.AccentedType == "NONE" {
 				rw.Info = makeInfo(rw.IPA, w.Mihs)
@@ -104,7 +104,7 @@ func betweenClitics(words []*process.ProcessedWord, at int) bool {
 
 func collectPhrase(words []*process.ProcessedWord, at int) (*api.ResultWord, int) {
 	l := len(words)
-	res := &api.ResultWord{Type: "WORD", IPAType: "PHRASE"}
+	res := &api.ResultWord{Type: "PHRASE", IPAType: "ONE"}
 	li := at
 	ni := 0
 	for i := at; i < l; i++ {

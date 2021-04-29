@@ -100,7 +100,7 @@ func handleText(data *Data) func(echo.Context) error {
 			return err
 		}
 
-		res, err := data.Transcriber.Process(text, c.QueryParam("returnTrans") == "1")
+		res, err := data.Transcriber.Process(text, c.QueryParam("sampa") == "1")
 		if err != nil {
 			goapp.Log.Error(err)
 			return echo.NewHTTPError(http.StatusInternalServerError, "Can't segment")
@@ -126,7 +126,7 @@ func handleWord(data *Data) func(echo.Context) error {
 			return echo.NewHTTPError(http.StatusBadRequest, "No word")
 		}
 
-		res, err := data.WordTranscriber.Process(word, c.QueryParam("returnTrans") == "1")
+		res, err := data.WordTranscriber.Process(word, c.QueryParam("sampa") == "1")
 		if err != nil {
 			goapp.Log.Error(errors.Wrap(err, "Cannot process "+word))
 			return echo.NewHTTPError(http.StatusInternalServerError, "Cannot process "+word)

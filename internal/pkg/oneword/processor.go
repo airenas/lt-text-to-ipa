@@ -15,10 +15,10 @@ type MainWorker struct {
 }
 
 //Work is main method
-func (mw *MainWorker) Process(input string, returnTrans bool) (*api.WordInfo, error) {
+func (mw *MainWorker) Process(input string, returnSAMPA bool) (*api.WordInfo, error) {
 	data := &Data{}
 	data.Word = input
-	data.ReturnTrans = returnTrans
+	data.ReturnSAMPA = returnSAMPA
 	err := mw.processAll(data)
 	if err != nil {
 		return nil, err

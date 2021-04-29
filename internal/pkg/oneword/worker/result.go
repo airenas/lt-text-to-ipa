@@ -44,7 +44,7 @@ func mapResult(data *oneword.Data) (*api.WordInfo, error) {
 					kRes[k] = rt
 				}
 				rt.IPAs = appendStrings(rt.IPAs, w.IPAs)
-				if (data.ReturnTrans) {
+				if (data.ReturnSAMPA) {
 					rt.Trans = appendStrings(rt.Trans, w.Transcriptions)
 				}
 			}

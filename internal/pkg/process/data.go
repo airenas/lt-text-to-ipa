@@ -8,7 +8,7 @@ import (
 // Data working data for one request
 type Data struct {
 	OriginalText string
-	ReturnTrans  bool
+	ReturnSAMPA  bool
 	Text         string
 
 	Words []*ProcessedWord
