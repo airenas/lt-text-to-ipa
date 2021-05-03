@@ -28,12 +28,13 @@ services:
   transcriber:
     container_name: transcriber
     image: airenas/transcriber:${TRANSCRIBER_SERVICE_VERSION}
-    volumes:
-     - ${ACCENTER_DATA_DIR}/resources:/resources:ro
+    environment:
+      - SECRET=${TRANSCRIBER_SECRET}
     restart: unless-stopped
     logging: *default-logging
 
   clitics:
+    container_name: clitics  
     image: airenas/clitics:0.1.206
     environment:
       - SECRET=${CLITICS_SECRET}
