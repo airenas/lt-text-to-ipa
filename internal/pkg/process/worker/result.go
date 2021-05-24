@@ -45,11 +45,6 @@ func (p *resultMaker) Process(data *process.Data) error {
 func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 	res := make([]*api.ResultWord, 0)
 	l := len(data.Words)
-	
-	// drop last value if only one word wanted
-	if l == 2 && data.Words[0].Tagged.Type == process.Word && data.Words[1].Tagged.Type == process.SentenceEnd {
-		l = 1
-	}
 
 	for i := 0; i < l; i++ {
 		w := data.Words[i]
@@ -62,6 +57,12 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 			continue
 		}
 		tgw := w.Tagged
+
+		// drop last value if only one word wanted
+		if i == (l-1) && len(res) == 1 && tgw.Type == process.SentenceEnd {
+			break
+		}
+
 		if w.Tagged.Type == process.Word {
 			rw := &api.ResultWord{Type: "WORD", String: tgw.String, IPA: w.IPA,
 				Trans:   getTrans(data.ReturnSAMPA, w.Transcription),
