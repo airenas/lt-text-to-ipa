@@ -112,3 +112,26 @@ func TestMapOtherWord(t *testing.T) {
 		assert.Equal(t, "WORD", res[0].Type)
 	}
 }
+
+func TestMapOneWord_DropSentenceEnd(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("ne"), IPA: "n e"})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Type: process.SentenceEnd}})
+	res, err := mapResult(d)
+	assert.Nil(t, err)
+	if assert.Equal(t, 1, len(res)) {
+		assert.Equal(t, "n e", res[0].IPA)
+		assert.Equal(t, "ONE", res[0].IPAType)
+		assert.Equal(t, "WORD", res[0].Type)
+	}
+}
+
+func TestMapSeveralWords(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("ne"), IPA: "n e"})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("ne"), IPA: "n e"})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Type: process.SentenceEnd}})
+	res, err := mapResult(d)
+	assert.Nil(t, err)
+	assert.Equal(t, 3, len(res))
+}

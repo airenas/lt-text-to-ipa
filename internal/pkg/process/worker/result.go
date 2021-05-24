@@ -45,6 +45,12 @@ func (p *resultMaker) Process(data *process.Data) error {
 func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 	res := make([]*api.ResultWord, 0)
 	l := len(data.Words)
+	
+	// drop last value if only one word wanted
+	if l == 2 && data.Words[0].Tagged.Type == process.Word && data.Words[1].Tagged.Type == process.SentenceEnd {
+		l = 1
+	}
+
 	for i := 0; i < l; i++ {
 		w := data.Words[i]
 		if w.Clitic != nil && w.Clitic.Type == "PHRASE" {
