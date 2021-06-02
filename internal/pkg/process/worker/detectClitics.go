@@ -38,7 +38,7 @@ func (p *cliticDetector) Process(data *process.Data) error {
 			return err
 		}
 	} else {
-		goapp.Log.Debug("Skip transcriber - no data in")
+		goapp.Log.Debug("Skip clitics - no data in")
 	}
 	return nil
 }
