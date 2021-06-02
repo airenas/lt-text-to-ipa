@@ -85,17 +85,12 @@ func toType(t process.StringTypeEnum) string {
 }
 
 func mapCliticsOutput(data *process.Data, out []cliticsOutput) error {
-	om := make(map[int]cliticsOutput)
 	for _, co := range out {
-		om[co.ID] = co
-	}
-
-	for i, w := range data.Words {
-		fco, ok := om[i]
-		if ok {
-			w.Clitic = &process.Clitic{Accent: fco.Accent, AccentedType: fco.AccentType,
-				Type: fco.Type, Pos: fco.Pos}
+		if co.ID >= len(data.Words) {
+			return errors.Errorf("wrong clitics output ID = '%d'. Max %d", co.ID, len(data.Words))
 		}
+		w := data.Words[co.ID]
+		w.Clitic = &process.Clitic{Accent: co.Accent, AccentedType: co.AccentType, Type: co.Type, Pos: co.Pos}
 	}
 	return nil
 }
