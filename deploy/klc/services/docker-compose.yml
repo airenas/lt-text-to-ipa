@@ -42,7 +42,7 @@ services:
     logging: *default-logging  
 
   sampa-to-ipa:
-    image: intelektikalt/sampa-to-ipa:0.1.3    
+    image: intelektikalt/sampa-to-ipa:${SAMPA_TO_IPA_SERVICE_VERSION}    
     restart: unless-stopped
     logging: *default-logging
 
