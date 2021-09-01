@@ -64,6 +64,90 @@ func TestMapClitic(t *testing.T) {
 	}
 }
 
+func TestMapPause(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("ne"), IPA: "n e"})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Type: process.SentenceEnd}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("ne"), IPA: "n e"})
+	res, err := mapResult(d)
+	assert.Nil(t, err)
+	if assert.Equal(t, 3, len(res)) {
+		assert.Equal(t, "n e", res[0].IPA)
+		assert.Equal(t, " \u2016 ", res[1].IPA)
+		assert.Equal(t, "n e", res[2].IPA)
+	}
+}
+
+func TestMapPauseWithSep(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("ne"), IPA: "n e"})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSpace(" ")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Type: process.SentenceEnd}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("ne"), IPA: "n e"})
+	res, err := mapResult(d)
+	assert.Nil(t, err)
+	if assert.Equal(t, 4, len(res)) {
+		assert.Equal(t, "n e", res[0].IPA)
+		assert.Equal(t, " ", res[1].IPA)
+		assert.Equal(t, "\u2016 ", res[2].IPA)
+		assert.Equal(t, "n e", res[3].IPA)
+	}
+}
+
+func TestMapPauseWithSep2(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("ne"), IPA: "n e"})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSpace(" ")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Type: process.SentenceEnd}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSpace(" ")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("ne"), IPA: "n e"})
+	res, err := mapResult(d)
+	assert.Nil(t, err)
+	if assert.Equal(t, 5, len(res)) {
+		assert.Equal(t, "n e", res[0].IPA)
+		assert.Equal(t, " ", res[1].IPA)
+		assert.Equal(t, "\u2016", res[2].IPA)
+		assert.Equal(t, " ", res[3].IPA)
+		assert.Equal(t, "n e", res[4].IPA)
+	}
+}
+
+func TestMapCommaWithSep2(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("ne"), IPA: "n e"})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSpace(" ")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep(",")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSpace(" ")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTWord("ne"), IPA: "n e"})
+	res, err := mapResult(d)
+	assert.Nil(t, err)
+	if assert.Equal(t, 5, len(res)) {
+		assert.Equal(t, "n e", res[0].IPA)
+		assert.Equal(t, " ", res[1].IPA)
+		assert.Equal(t, "\u007C", res[2].IPA)
+		assert.Equal(t, " ", res[3].IPA)
+		assert.Equal(t, "n e", res[4].IPA)
+	}
+}
+
+func TestMapCommaWithSep3(t *testing.T) {
+	d := newTestData()
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSpace(" ")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep(",")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep(",")})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Type: process.SentenceEnd}})
+	d.Words = append(d.Words, &process.ProcessedWord{Tagged: process.TaggedWord{Type: process.SentenceEnd}})
+	res, err := mapResult(d)
+	assert.Nil(t, err)
+	if assert.Equal(t, 5, len(res)) {
+		assert.Equal(t, " ", res[0].IPA)
+		assert.Equal(t, "\u007C ", res[1].IPA)
+		assert.Equal(t, "\u007C ", res[2].IPA)
+		assert.Equal(t, "\u2016 ", res[3].IPA)
+		assert.Equal(t, "\u2016", res[4].IPA)
+	}
+}
+
 func TestMapSep(t *testing.T) {
 	d := newTestData()
 	d.Words = append(d.Words, &process.ProcessedWord{Tagged: newTestTSep("\n")})
@@ -82,7 +166,7 @@ func TestMapSepComma(t *testing.T) {
 	res, err := mapResult(d)
 	assert.Nil(t, err)
 	if assert.Equal(t, 1, len(res)) {
-		assert.Equal(t, " | ", res[0].IPA)
+		assert.Equal(t, "|", res[0].IPA)
 		assert.Equal(t, "NONE", res[0].IPAType)
 		assert.Equal(t, "SEPARATOR", res[0].Type)
 	}
@@ -94,7 +178,7 @@ func TestMapSepSentence(t *testing.T) {
 	res, err := mapResult(d)
 	assert.Nil(t, err)
 	if assert.Equal(t, 1, len(res)) {
-		assert.Equal(t, " \u2016 ", res[0].IPA)
+		assert.Equal(t, "\u2016", res[0].IPA)
 		assert.Equal(t, "NONE", res[0].IPAType)
 		assert.Equal(t, "SEPARATOR", res[0].Type)
 	}

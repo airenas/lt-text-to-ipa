@@ -76,13 +76,13 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 		} else if w.Tagged.Type == process.OtherWord {
 			res = append(res, &api.ResultWord{Type: "WORD", String: tgw.String, IPA: tgw.String, IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.SentenceEnd {
-			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: " \u2016 ",
+			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: withSep("\u2016", data.Words, i),
 				IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.Space && betweenClitics(data.Words, i) {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "‿",
 				IPAType: ipaToString(SepClitic)})
 		} else if w.Tagged.Type == process.Separator && tgw.String == "," {
-			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: " \u007C ",
+			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: withSep("\u007C", data.Words, i),
 				IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.Separator && tgw.String == "\n" {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "\n",
@@ -93,6 +93,26 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 		}
 	}
 	return res, nil
+}
+
+func withSep(s string, words []*process.ProcessedWord, i int) string {
+	res := ""
+	if i > 0 && isWord(words[i-1].Tagged.Type) {
+		res += " "
+	}
+	res += s
+	if i < (len(words) - 1) {
+		tgw := words[i+1].Tagged
+		tgwt := tgw.Type
+		if isWord(tgwt) || tgwt == process.SentenceEnd || (tgwt == process.Separator && tgw.String == ",") {
+			res += " "
+		}
+	}
+	return res
+}
+
+func isWord(t process.StringTypeEnum) bool {
+	return t == process.Word || t == process.OtherWord
 }
 
 func getIPAWordType(w *process.ProcessedWord) string {
