@@ -76,13 +76,13 @@ func mapResult(data *process.Data) ([]*api.ResultWord, error) {
 		} else if w.Tagged.Type == process.OtherWord {
 			res = append(res, &api.ResultWord{Type: "WORD", String: tgw.String, IPA: tgw.String, IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.SentenceEnd {
-			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "//",
+			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: " \u2016 ",
 				IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.Space && betweenClitics(data.Words, i) {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "‿",
 				IPAType: ipaToString(SepClitic)})
 		} else if w.Tagged.Type == process.Separator && tgw.String == "," {
-			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "/",
+			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: " \u007C ",
 				IPAType: ipaToString(None)})
 		} else if w.Tagged.Type == process.Separator && tgw.String == "\n" {
 			res = append(res, &api.ResultWord{Type: "SEPARATOR", String: tgw.String, IPA: "\n",

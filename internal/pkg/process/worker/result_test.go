@@ -82,7 +82,7 @@ func TestMapSepComma(t *testing.T) {
 	res, err := mapResult(d)
 	assert.Nil(t, err)
 	if assert.Equal(t, 1, len(res)) {
-		assert.Equal(t, "/", res[0].IPA)
+		assert.Equal(t, " | ", res[0].IPA)
 		assert.Equal(t, "NONE", res[0].IPAType)
 		assert.Equal(t, "SEPARATOR", res[0].Type)
 	}
@@ -94,7 +94,7 @@ func TestMapSepSentence(t *testing.T) {
 	res, err := mapResult(d)
 	assert.Nil(t, err)
 	if assert.Equal(t, 1, len(res)) {
-		assert.Equal(t, "//", res[0].IPA)
+		assert.Equal(t, " \u2016 ", res[0].IPA)
 		assert.Equal(t, "NONE", res[0].IPAType)
 		assert.Equal(t, "SEPARATOR", res[0].Type)
 	}
