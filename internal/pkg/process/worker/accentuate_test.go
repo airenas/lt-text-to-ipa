@@ -209,6 +209,25 @@ func TestMapAccOutput_FailErrorTooLong(t *testing.T) {
 	}
 }
 
+func TestCountVariants(t *testing.T) {
+	assert.Equal(t, 1, countVariants([]extapi.Accent{
+		{MiVdu: "mi1", Variants: []extapi.AccentVariant{{Accent: 301, Syll: "v-1"}}},
+	}))
+	assert.Equal(t, 1, countVariants([]extapi.Accent{
+		{MiVdu: "mi1", Variants: []extapi.AccentVariant{{Accent: 301, Syll: "v-1"}}, MF: "v1"},
+		{MiVdu: "mi1", Variants: []extapi.AccentVariant{{Accent: 301, Syll: "v-1"},
+			{Accent: 301, Syll: "v-1"}}, MF: "v2"},
+	}))
+	assert.Equal(t, 2, countVariants([]extapi.Accent{
+		{MiVdu: "mi1", Variants: []extapi.AccentVariant{{Accent: 301, Syll: "v-1"}}, MF: "v1"},
+		{MiVdu: "mi1", Variants: []extapi.AccentVariant{{Accent: 302, Syll: "v-1"}}, MF: "v1"},
+	}))
+	assert.Equal(t, 3, countVariants([]extapi.Accent{
+		{MiVdu: "mi1", Variants: []extapi.AccentVariant{{Accent: 301, Syll: "v-1"}, {Accent: 302, Syll: "v-1"}}, MF: "v1"},
+		{MiVdu: "mi1", Variants: []extapi.AccentVariant{{Accent: 301, Syll: "v-2"}}, MF: "v1"},
+	}))
+}
+
 func TestFindBest_UseLemma(t *testing.T) {
 	acc := []extapi.Accent{{MiVdu: "mi2", MF: "lema1", Variants: []extapi.AccentVariant{{Accent: 101}}},
 		{MiVdu: "mi2", MF: "lema", Variants: []extapi.AccentVariant{{Accent: 103}}}}

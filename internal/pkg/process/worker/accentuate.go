@@ -130,7 +130,7 @@ func countVariants(acc []extapi.Accent) int {
 	for _, a := range acc {
 		for _, v := range a.Variants {
 			if v.Accent > 0 {
-				am[fmt.Sprintf("%d,%s,%s", v.Accent, v.Syll, a.MF)] = true
+				am[fmt.Sprintf("%d,%s", v.Accent, v.Syll)] = true
 			}
 		}
 	}
