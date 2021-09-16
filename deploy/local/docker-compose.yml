@@ -15,6 +15,8 @@ services:
 
   tagger:
     image: airenas/tagger:${TAGGER_VERSION}
+    ports:
+      - "8092:8000"
     environment:
       - MORPHOLOGY_URL=http://semantika:8090/morphology
       - SEGMENTATION_URL=http://lex:8080/
@@ -26,10 +28,14 @@ services:
     image: semantikadocker.vdu.lt/lex:latest
 
   clitics:
-    image: airenas/clitics:0.1.205
+    image: airenas/clitics:0.1.206
+    ports:
+      - "8091:8000"
     environment:
       - SECRET=${CLITICS_SECRET} 
 
   sampa-to-ipa:
-    image: intelektikalt/sampa-to-ipa:0.1.3    
+    ports:
+      - "8090:3000"
+    image: intelektikalt/sampa-to-ipa:0.2.5   
    
