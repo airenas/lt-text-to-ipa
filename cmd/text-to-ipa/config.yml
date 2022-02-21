@@ -7,7 +7,7 @@ tagger:
 accenter:
   url: http://klcdocker.vdu.lt/accenter/accent?human=true&roe=true&all=true  
 transcriber:
-  url: http://192.168.1.71:7027/transcription?gem=gem1&joinatsi=true&all=true
+  url: http://192.168.1.71:7027/transcription?gem=gem1&joinatsi=1&all=1&skipvocalend=1&keepnb=1&hardNk=1&asimZdz=1&asimzdZ=1&asimZz=1&nogemaff=1
 ipaConverter:
   url: http://127.0.0.1:8090/sampa2ipa_list
 cliticsDetector:
