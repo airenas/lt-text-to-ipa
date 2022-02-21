@@ -1,11 +1,13 @@
 package extapi
 
+//AccentOutputElement accentuate method output element
 type AccentOutputElement struct {
 	Accent []Accent `json:"accent"`
 	Word   string   `json:"word"`
 	Error  string   `json:"error,omitempty"`
 }
 
+//Accent structure for one word accent
 type Accent struct {
 	MF       string          `json:"mf"`
 	Mi       string          `json:"mi"`
@@ -25,6 +27,7 @@ type AccentVariant struct {
 	Meaning  string  `json:"meaning,omitempty"`
 }
 
+//TransInput transcription input
 type TransInput struct {
 	Word string `json:"word"`
 	Syll string `json:"syll"`
@@ -34,20 +37,24 @@ type TransInput struct {
 	Acc  int    `json:"acc"`
 }
 
+//TransOutput transcription output
 type TransOutput struct {
 	Transcription []Trans `json:"transcription"`
 	Word          string  `json:"word"`
 	Error         string  `json:"error"`
 }
 
+//Trans transcription variant
 type Trans struct {
 	Transcription string `json:"transcription"`
 }
 
+//IPAInput input for IPA method
 type IPAInput struct {
 	Transcription string `json:"transcription"`
 }
 
+//IPAOutput output of IPA method
 type IPAOutput struct {
 	Transcription string `json:"transcription"`
 	IPA           string `json:"ipa"`

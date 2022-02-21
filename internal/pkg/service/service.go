@@ -22,7 +22,7 @@ type (
 		Process(string, bool) ([]*api.ResultWord, error)
 	}
 
-	// TranscriberOne returns possible transcription wariants for one word
+	// WordTranscriber returns possible transcription wariants for one word
 	WordTranscriber interface {
 		Process(string, bool) (*api.WordInfo, error)
 	}

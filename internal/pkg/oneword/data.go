@@ -12,6 +12,7 @@ type Data struct {
 	Result *api.WordInfo
 }
 
+//WorkingWord structure for one working word
 type WorkingWord struct {
 	Meaning string
 	MI      string

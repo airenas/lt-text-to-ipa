@@ -14,7 +14,7 @@ type MainWorker struct {
 	processors []Processor
 }
 
-//Work is main method
+//Process is main method
 func (mw *MainWorker) Process(input string, returnSAMPA bool) (*api.WordInfo, error) {
 	data := &Data{}
 	data.Word = input

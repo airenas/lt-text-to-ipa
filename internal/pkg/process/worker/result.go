@@ -11,9 +11,13 @@ import (
 type ipaTypeEnum int
 
 const (
+	//None indicates no IPA Type
 	None ipaTypeEnum = iota + 1
+	//WordOne - string is one word
 	WordOne
+	//WordMultiple - string is made from multiple words
 	WordMultiple
+	//SepClitic - separator for clitics
 	SepClitic
 )
 

@@ -23,7 +23,7 @@ type ErrWordTooLong struct {
 	Word string
 }
 
-//NewErrBadAccent creates new error
+//NewErrWordTooLong creates new too long error
 func NewErrWordTooLong(word string) *ErrWordTooLong {
 	return &ErrWordTooLong{Word: word}
 }

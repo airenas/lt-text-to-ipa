@@ -12,7 +12,7 @@ type toIPA struct {
 	httpWrap HTTPInvokerJSON
 }
 
-//NewAccentuator creates new processor
+//NewToIPA creates new processor
 func NewToIPA(urlStr string) (oneword.Processor, error) {
 	res := &toIPA{}
 	var err error
