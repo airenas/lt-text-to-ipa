@@ -102,7 +102,8 @@ func key(w *oneword.WorkingWord) string {
 }
 
 func keyIPA(s []string) string {
-	cs := s
+	cs := make([]string, len(s))
+	copy(cs, s)
 	sort.Strings(cs)
 	res := strings.Builder{}
 	for _, st := range cs {
