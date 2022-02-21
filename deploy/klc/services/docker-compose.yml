@@ -18,7 +18,7 @@ services:
       - LOGGER_LEVEL=DEBUG
       - TAGGER_URL=http://tagger:8000/tag
       - ACCENTER_URL=http://accenter:8000/accent?human=true&roe=true&all=true
-      - TRANSCRIBER_URL=http://transcriber:8000/transcription?gem=gem1&joinatsi=true&all=true
+      - TRANSCRIBER_URL=http://transcriber:8000/transcription?gem=gem1&joinatsi=true&all=true&skipvocalend=1&keepnb=1&hardNk=1&asimZdz=1&asimzdZ=1&asimZz=1&nogemaff=1
       - CLITICSDETECTOR_URL=http://clitics:8000/clitics
       - IPACONVERTER_URL=http://sampa-to-ipa:3000/sampa2ipa_list
     labels:
