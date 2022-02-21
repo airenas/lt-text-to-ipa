@@ -3,6 +3,7 @@ package utils
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"strings"
@@ -29,8 +30,16 @@ func NewHTTWrap(urlStr string) (*HTTPWrap, error) {
 		return nil, errors.Wrapf(err, "Can't parse url '%s'", urlStr)
 	}
 	res.Timeout = time.Second * 30
-	res.HTTPClient = &http.Client{}
+	res.HTTPClient = &http.Client{Transport: newTransport()}
 	return res, nil
+}
+
+func newTransport() http.RoundTripper {
+	res := http.DefaultTransport.(*http.Transport).Clone()
+	res.MaxIdleConns = 100
+	res.MaxConnsPerHost = 100
+	res.MaxIdleConnsPerHost = 50
+	return res
 }
 
 //InvokeText makes http call with text
@@ -76,20 +85,23 @@ func (hw *HTTPWrap) invoke(req *http.Request, dataOut interface{}) error {
 	LogData("Call : ", hw.URL)
 	resp, err := hw.HTTPClient.Do(req)
 	if err != nil {
-		return errors.Wrapf(err, "Can't call '%s'", hw.URL)
+		return errors.Wrapf(err, "can't call '%s'", hw.URL)
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode < 200 || resp.StatusCode > 299 {
-		return errors.Errorf("Can't invoke '%s'. Code: '%d'", hw.URL, resp.StatusCode)
+	defer func() {
+		_, _ = io.Copy(io.Discard, io.LimitReader(resp.Body, 10000))
+		_ = resp.Body.Close()
+	}()
+	if err := goapp.ValidateHTTPResp(resp, 100); err != nil {
+		return err
 	}
 	br, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return errors.Wrap(err, "Can't read body")
+		return errors.Wrap(err, "can't read body")
 	}
 	LogData("Output: ", string(br))
 	err = json.Unmarshal(br, dataOut)
 	if err != nil {
-		return errors.Wrap(err, "Can't decode response")
+		return errors.Wrap(err, "can't decode response")
 	}
 	return nil
 }
