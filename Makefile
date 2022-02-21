@@ -40,7 +40,7 @@ docker/build:
 	cd build && $(MAKE) dbuild
 .PHONY: docker/build
 #####################################################################################
-## build and push lt-pos-tagger docker image
+## build and push text-to-ipa docker image
 docker/push:
 	cd build && $(MAKE) dpush
 .PHONY: docker/push
